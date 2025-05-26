@@ -1,0 +1,27 @@
+{
+  "name": "avatarbackend",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/AmmarHussainn/avatarbackend#readme",
+  "bugs": {
+    "url": "https://github.com/AmmarHussainn/avatarbackend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AmmarHussainn/avatarbackend.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "moment": "^2.30.1",
+    "mongoose": "^8.15.0"
+  }
+}
