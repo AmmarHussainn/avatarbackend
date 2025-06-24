@@ -939,7 +939,7 @@ app.post('/api/form-data', validateFormData, async (req, res) => {
         to: ['ammar@meetgabbi.com','ayaz.ext@gmail.com','Form@linerlegal.com','Forsm@linerlegal.com'],
         subject: `SS application Form ${savedData.name}`,
         text: `Dear Team,\n\nA new form submission has been received from ${savedData.name}. Please find attached the PDF containing the submitted information.\n\nBest regards,\nSystem`,
-        attachments: [{ filename: 'SS application Form', path: `./${pdfFileName}` }],
+        attachments: [{ filename: pdfFileName, path: `./${pdfFileName}` }],
       };
 
       await transporter.sendMail(mailOptions);
