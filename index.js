@@ -936,7 +936,7 @@ app.post('/api/form-data', validateFormData, async (req, res) => {
       // Send email with PDF attachment
       const mailOptions = {
         from: process.env.EMAIL_USER,
-        to: 'ayaz@meetgabbi.com',
+        to: ['ammar@meetgabbi.com','ayaz.ext@gmail.com'],
         subject: `Form Submission from ${savedData.name}`,
         text: `Dear Team,\n\nA new form submission has been received from ${savedData.name}. Please find attached the PDF containing the submitted information.\n\nBest regards,\nSystem`,
         attachments: [{ filename: pdfFileName, path: `./${pdfFileName}` }],
