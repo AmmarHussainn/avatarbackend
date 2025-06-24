@@ -544,6 +544,10 @@ app.post('/api/form-data', validateFormData, async (req, res) => {
   }
 });
 
+
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'API is working correctly 🚀' });
+});
 // Start Server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
