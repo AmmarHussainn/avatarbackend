@@ -631,6 +631,10 @@ const doctorSchema = new mongoose.Schema({
   testing: { type: String, trim: true, default: '' },
   address: { type: String, trim: true, default: '' },
   zipCode: { type: String, trim: true, match: [/^\d{5}$|^$/], default: '' },
+  city: { type: String, trim: true, default: '' },
+  state: { type: String, trim: true, match: [/^[A-Z]{2}$|^$/], default: '' },
+  phone: { type: String, trim: true, match: [/^\+?[\d\s-]{7,15}$|^$/], default: '' },
+  approximatedate: { type: String, trim: true, match: [/^\d{4}-\d{2}$|^$/], default: '' },
 });
 
 const specialistSchema = new mongoose.Schema({
@@ -646,6 +650,10 @@ const additionalDoctorSchema = new mongoose.Schema({
   city: { type: String, trim: true, default: '' },
   phone: { type: String, trim: true, match: [/^\+?[\d\s-]{7,15}$|^$/], default: '' },
   state: { type: String, trim: true, match: [/^[A-Z]{2}$|^$/], default: '' },
+  approximatedate: { type: String, trim: true, match: [/^\d{4}-\d{2}$|^$/], default: '' },
+  address: { type: String, trim: true, default: '' },
+  zipCode: { type: String, trim: true, match: [/^\d{5}$|^$/], default: '' },
+  
 });
 
 const hospitalizationSchema = new mongoose.Schema({
@@ -829,6 +837,10 @@ async function generatePDF(formData) {
        .text(`Testing: ${formData.medical.primaryCare.testing || 'N/A'}`)
        .text(`Address: ${formData.medical.primaryCare.address || 'N/A'}`)
        .text(`Zip Code: ${formData.medical.primaryCare.zipCode || 'N/A'}`)
+       .text(`City: ${formData.medical.primaryCare.city || 'N/A'}`)
+        .text(`State: ${formData.medical.primaryCare.state || 'N/A'}`)
+        .text(`Phone: ${formData.medical.primaryCare.phone || 'N/A'}`)
+       .text(`Approximate Date: ${formData.medical.primaryCare.approximatedate || 'N/A'}`)
        .moveDown(1);
 
     pdfDoc.font('Helvetica-Bold').fontSize(10)
@@ -853,6 +865,10 @@ async function generatePDF(formData) {
            .text(`City: ${doctor.city || 'N/A'}`)
            .text(`Phone: ${doctor.phone || 'N/A'}`)
            .text(`State: ${doctor.state || 'N/A'}`)
+          .text(`Approximate Date: ${doctor.approximatedate || 'N/A'}`)
+          .text(`Address: ${doctor.address || 'N/A'}`)
+          .text(`Zip Code: ${doctor.zipCode || 'N/A'}`)
+
            .moveDown(0.5);
       });
     }
