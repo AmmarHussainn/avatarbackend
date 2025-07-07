@@ -91,7 +91,7 @@
 //   name: {
 //     type: String,
 //     trim: true,
-//     match: [/^[a-zA-Z\s]*$/, 'Doctor name must contain only letters and spaces'],
+//     match: [/^[a-zA-Z\s.,]+$/, 'Doctor name must contain only letters and spaces'],
 //     default: '',
 //   },
 //   testing: {
@@ -117,7 +117,7 @@
 //   name: {
 //     type: String,
 //     trim: true,
-//     match: [/^[a-zA-Z\s]*$/, 'Specialist name must contain only letters and spaces'],
+//     match: [/^[a-zA-Z\s.,]+$/, 'Specialist name must contain only letters and spaces'],
 //     default: '',
 //   },
 //   specialty: {
@@ -148,7 +148,7 @@
 //   name: {
 //     type: String,
 //     trim: true,
-//     match: [/^[a-zA-Z\s]*$/, 'Doctor name must contain only letters and spaces'],
+//     match: [/^[a-zA-Z\s.,]+$/, 'Doctor name must contain only letters and spaces'],
 //     default: '',
 //   },
 //   city: {
@@ -394,7 +394,7 @@
 //   body('medical.primaryCare.name')
 //     .optional()
 //     .trim()
-//     .matches(/^[a-zA-Z\s]*$/)
+//     .matches(/^[a-zA-Z\s.,]+$/)
 //     .withMessage('Primary care doctor name must contain only letters and spaces'),
 //   body('medical.primaryCare.zipCode')
 //     .optional()
@@ -404,7 +404,7 @@
 //   body('medical.specialist.name')
 //     .optional()
 //     .trim()
-//     .matches(/^[a-zA-Z\s]*$/)
+//     .matches(/^[a-zA-Z\s.,]+$/)
 //     .withMessage('Specialist name must contain only letters and spaces'),
 //   body('medical.specialist.zipCode')
 //     .optional()
@@ -417,7 +417,7 @@
 //   body('medical.additionalDoctors.*.name')
 //     .optional()
 //     .trim()
-//     .matches(/^[a-zA-Z\s]*$/)
+//     .matches(/^[a-zA-Z\s.,]+$/)
 //     .withMessage('Additional doctor name must contain only letters and spaces'),
 //   body('medical.additionalDoctors.*.phone')
 //     .optional()
@@ -462,12 +462,11 @@
 
 // // API Endpoint to Handle Form Submission
 
-
 // // In your backend route handler
 // app.post('/api/form-data', validateFormData, async (req, res) => {
 //   const errors = validationResult(req);
 //   if (!errors.isEmpty()) {
-//     return res.status(400).json({ 
+//     return res.status(400).json({
 //       errors: errors.array(),
 //       message: 'Validation failed'
 //     });
@@ -479,7 +478,7 @@
 //       const treatmentDate = new Date(req.body.medical.treatmentEndDate);
 //       const twoYearsAgo = new Date();
 //       twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
-      
+
 //       if (treatmentDate > new Date() || treatmentDate < twoYearsAgo) {
 //         return res.status(400).json({
 //           error: 'Treatment end date must be within the last two years'
@@ -492,10 +491,10 @@
 //       ...req.body,
 //       medical: {
 //         ...req.body.medical,
-//         additionalDoctors: req.body.medical.additionalDoctors.filter(doc => 
+//         additionalDoctors: req.body.medical.additionalDoctors.filter(doc =>
 //           doc.name || doc.city || doc.phone || doc.state
 //         ),
-//         hospitalizations: req.body.medical.hospitalizations.filter(hosp => 
+//         hospitalizations: req.body.medical.hospitalizations.filter(hosp =>
 //           hosp.name || hosp.address || hosp.phone || hosp.reason || hosp.date
 //         )
 //       }
@@ -528,16 +527,14 @@
 //       console.error('Error sending data to GoHighLevel webhook:', webhookError);
 //       // You might want to handle this error differently, maybe queue it for retry
 //     }
-  
 
-    
-//     res.status(201).json({ 
+//     res.status(201).json({
 //       message: 'Form data submitted successfully',
 //       data: savedData
 //     });
 //   } catch (error) {
 //     console.error('Error saving form data:', error);
-//     res.status(500).json({ 
+//     res.status(500).json({
 //       error: error.message || 'Internal server error',
 //       details: process.env.NODE_ENV === 'development' ? error.stack : undefined
 //     });
@@ -549,41 +546,16 @@
 //   console.log(`Server is running on port ${PORT}`);
 // });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const axios = require('axios');
-const nodemailer = require('nodemailer');
-const PDFDocument = require('pdfkit');
-const fs = require('fs');
-const fsPromises = require('fs').promises;
-const { body, validationResult } = require('express-validator');
-require('dotenv').config();
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const axios = require("axios");
+const nodemailer = require("nodemailer");
+const PDFDocument = require("pdfkit");
+const fs = require("fs");
+const fsPromises = require("fs").promises;
+const { body, validationResult } = require("express-validator");
+require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -598,14 +570,14 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 // Mongoose Schemas
 const chatMessageSchema = new mongoose.Schema({
   message: { type: String, required: true, trim: true },
-  type: { type: String, required: true, enum: ['user', 'avatar'] },
-  mode: { type: String, required: true, enum: ['text_mode', 'voice_mode'] },
+  type: { type: String, required: true, enum: ["user", "avatar"] },
+  mode: { type: String, required: true, enum: ["text_mode", "voice_mode"] },
   timestamp: { type: Date, required: true },
 });
 
@@ -618,50 +590,77 @@ const jobSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: function (value) {
-        return value === 'present' || /^\d{4}-\d{2}$/.test(value);
+        return value === "present" || /^\d{4}-\d{2}$/.test(value);
       },
     },
   },
   payAmount: { type: Number, required: true, min: 0 },
-  payFrequency: { type: String, required: true, enum: ['hourly', 'biweekly', 'monthly', 'annually'] },
+  payFrequency: {
+    type: String,
+    required: true,
+    enum: ["hourly", "biweekly", "monthly", "annually"],
+  },
 });
 
 const doctorSchema = new mongoose.Schema({
-  name: { type: String, trim: true, match: [/^[a-zA-Z\s]*$/], default: '' },
-  testing: { type: String, trim: true, default: '' },
-  address: { type: String, trim: true, default: '' },
-  zipCode: { type: String, trim: true, match: [/^\d{5}$|^$/], default: '' },
-  city: { type: String, trim: true, default: '' },
-  state: { type: String, trim: true, match: [/^[A-Z]{2}$|^$/], default: '' },
-  phone: { type: String, trim: true, match: [/^\+?[\d\s-]{7,15}$|^$/], default: '' },
-  approximatedate: { type: String, trim: true, match: [/^\d{4}-\d{2}$|^$/], default: '' },
+  name: { type: String, trim: true, match: [/^[a-zA-Z\s.,]+$/], default: "" },
+  testing: { type: String, trim: true, default: "" },
+  address: { type: String, trim: true, default: "" },
+  zipCode: { type: String, trim: true, match: [/^\d{5}$|^$/], default: "" },
+  city: { type: String, trim: true, default: "" },
+  state: { type: String, trim: true, match: [/^[A-Z]{2}$|^$/], default: "" },
+   date: { type: String, trim: true, match: [/^\d{4}-\d{2}$|^$/], default: '' },
+  phone: {
+    type: String,
+    trim: true,
+    match: [/^\+?[\d\s-]{7,15}$|^$/],
+    default: "",
+  },
 });
 
 const specialistSchema = new mongoose.Schema({
-  name: { type: String, trim: true, match: [/^[a-zA-Z\s]*$/], default: '' },
-  specialty: { type: String, trim: true, default: '' },
-  testing: { type: String, trim: true, default: '' },
-  address: { type: String, trim: true, default: '' },
-  zipCode: { type: String, trim: true, match: [/^\d{5}$|^$/], default: '' },
+  name: { type: String, trim: true, match: [/^[a-zA-Z\s.,]+$/], default: "" },
+  specialty: { type: String, trim: true, default: "" },
+  testing: { type: String, trim: true, default: "" },
+  address: { type: String, trim: true, default: "" },
+  zipCode: { type: String, trim: true, match: [/^\d{5}$|^$/], default: "" },
+   date: { type: String, trim: true, match: [/^\d{4}-\d{2}$|^$/], default: '' },
+  city: { type: String, trim: true, default: "" },
+  state: { type: String, trim: true, match: [/^[A-Z]{2}$|^$/], default: "" },
+  phone: {
+    type: String,
+    trim: true,
+    match: [/^\+?[\d\s-]{7,15}$|^$/],
+    default: "",
+  },
 });
 
 const additionalDoctorSchema = new mongoose.Schema({
-  name: { type: String, trim: true, match: [/^[a-zA-Z\s]*$/], default: '' },
-  city: { type: String, trim: true, default: '' },
-  phone: { type: String, trim: true, match: [/^\+?[\d\s-]{7,15}$|^$/], default: '' },
-  state: { type: String, trim: true, match: [/^[A-Z]{2}$|^$/], default: '' },
-  approximatedate: { type: String, trim: true, match: [/^\d{4}-\d{2}$|^$/], default: '' },
-  address: { type: String, trim: true, default: '' },
-  zipCode: { type: String, trim: true, match: [/^\d{5}$|^$/], default: '' },
-  
+  name: { type: String, trim: true, match: [/^[a-zA-Z\s.,]+$/], default: "" },
+  city: { type: String, trim: true, default: "" },
+  phone: {
+    type: String,
+    trim: true,
+    match: [/^\+?[\d\s-]{7,15}$|^$/],
+    default: "",
+  },
+  state: { type: String, trim: true, match: [/^[A-Z]{2}$|^$/], default: "" },
+   date: { type: String, trim: true, match: [/^\d{4}-\d{2}$|^$/], default: '' },
+  address: { type: String, trim: true, default: "" },
+  zipCode: { type: String, trim: true, match: [/^\d{5}$|^$/], default: "" },
 });
 
 const hospitalizationSchema = new mongoose.Schema({
-  name: { type: String, trim: true, default: '' },
-  address: { type: String, trim: true, default: '' },
-  phone: { type: String, trim: true, match: [/^\+?[\d\s-]{7,15}$|^$/], default: '' },
-  reason: { type: String, trim: true, default: '' },
-  date: { type: String, trim: true, match: [/^\d{4}-\d{2}$|^$/], default: '' },
+  name: { type: String, trim: true, default: "" },
+  address: { type: String, trim: true, default: "" },
+  phone: {
+    type: String,
+    trim: true,
+    match: [/^\+?[\d\s-]{7,15}$|^$/],
+    default: "",
+  },
+  reason: { type: String, trim: true, default: "" },
+  date: { type: String, trim: true, match: [/^\d{4}-\d{2}$|^$/], default: "" },
 });
 
 const medicalSchema = new mongoose.Schema({
@@ -670,16 +669,16 @@ const medicalSchema = new mongoose.Schema({
     trim: true,
     match: [/^\d{4}-\d{2}$|^$/],
     validate: {
-      validator: function(value) {
+      validator: function (value) {
         if (!value) return true;
         const date = new Date(value);
         const twoYearsAgo = new Date();
         twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
         return date <= new Date() && date >= twoYearsAgo;
       },
-      message: 'Treatment end date must be within the last two years'
+      message: "Treatment end date must be within the last two years",
     },
-    default: ''
+    default: "",
   },
   primaryCare: { type: doctorSchema, default: () => ({}) },
   specialist: { type: specialistSchema, default: () => ({}) },
@@ -689,26 +688,42 @@ const medicalSchema = new mongoose.Schema({
 
 const formDataSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true, minlength: 2 },
-  phone: { type: String, required: true, trim: true, match: [/^\+?[\d\s-]{7,15}$/] },
-  email: { type: String, required: true, trim: true, match: [/^\S+@\S+\.\S+$/] },
+  phone: {
+    type: String,
+    required: true,
+    trim: true,
+    match: [/^\+?[\d\s-]{7,15}$/],
+  },
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    match: [/^\S+@\S+\.\S+$/],
+  },
   ssn: { type: String, required: true, trim: true, match: [/^\d{4}$/] },
   marriedOverTenOrDeceased: { type: Boolean, required: true },
   spouseName: {
     type: String,
     trim: true,
-    required: function () { return this.marriedOverTenOrDeceased; },
+    required: function () {
+      return this.marriedOverTenOrDeceased;
+    },
     minlength: 2,
   },
   spouseDOB: {
     type: String,
     trim: true,
-    required: function () { return this.marriedOverTenOrDeceased; },
+    required: function () {
+      return this.marriedOverTenOrDeceased;
+    },
     match: [/^\d{4}-\d{2}-\d{2}$/],
   },
   spouseSSN: {
     type: String,
     trim: true,
-    required: function () { return this.marriedOverTenOrDeceased; },
+    required: function () {
+      return this.marriedOverTenOrDeceased;
+    },
     match: [/^\d{4}$/],
   },
   jobs: {
@@ -721,42 +736,123 @@ const formDataSchema = new mongoose.Schema({
   timestamp: { type: Date, required: true, default: Date.now },
 });
 
-const FormData = mongoose.model('FormData', formDataSchema);
+const FormData = mongoose.model("FormData", formDataSchema);
 
 // Validation Middleware
 const validateFormData = [
-  body('name').trim().isLength({ min: 2 }),
-  body('phone').trim().matches(/^\+?[\d\s-]{7,15}$/),
-  body('email').trim().isEmail(),
-  body('ssn').trim().matches(/^\d{4}$/),
-  body('marriedOverTenOrDeceased').isBoolean(),
-  body('spouseName').if(body('marriedOverTenOrDeceased').equals('true')).trim().isLength({ min: 2 }),
-  body('spouseDOB').if(body('marriedOverTenOrDeceased').equals('true')).trim().matches(/^\d{4}-\d{2}-\d{2}$/),
-  body('spouseSSN').if(body('marriedOverTenOrDeceased').equals('true')).trim().matches(/^\d{4}$/),
-  body('jobs').isArray({ min: 1, max: 5 }),
-  body('jobs.*.business').trim().isLength({ min: 2 }),
-  body('jobs.*.title').trim().isLength({ min: 2 }),
-  body('jobs.*.startDate').trim().matches(/^\d{4}-\d{2}$/),
-  body('jobs.*.endDate').trim().custom((value) => value === 'present' || /^\d{4}-\d{2}$/.test(value)),
-  body('jobs.*.payAmount').isFloat({ min: 0 }),
-  body('jobs.*.payFrequency').isIn(['hourly', 'biweekly', 'monthly', 'annually']),
-  body('medical.treatmentEndDate').optional().trim().matches(/^\d{4}-\d{2}$|^$/),
-  body('medical.primaryCare.name').optional().trim().matches(/^[a-zA-Z\s]*$/),
-  body('medical.primaryCare.zipCode').optional().trim().matches(/^\d{5}$|^$/),
-  body('medical.specialist.name').optional().trim().matches(/^[a-zA-Z\s]*$/),
-  body('medical.specialist.zipCode').optional().trim().matches(/^\d{5}$|^$/),
-  body('medical.additionalDoctors').isArray(),
-  body('medical.additionalDoctors.*.name').optional().trim().matches(/^[a-zA-Z\s]*$/),
-  body('medical.additionalDoctors.*.phone').optional().trim().matches(/^\+?[\d\s-]{7,15}$|^$/),
-  body('medical.additionalDoctors.*.state').optional().trim().matches(/^[A-Z]{2}$|^$/),
-  body('medical.hospitalizations').isArray(),
-  body('medical.hospitalizations.*.phone').optional().trim().matches(/^\+?[\d\s-]{7,15}$|^$/),
-  body('medical.hospitalizations.*.date').optional().trim().matches(/^\d{4}-\d{2}$|^$/),
-  body('chatHistory').isArray(),
-  body('chatHistory.*.message').trim().notEmpty(),
-  body('chatHistory.*.type').isIn(['user', 'avatar']),
-  body('chatHistory.*.mode').isIn(['text_mode', 'voice_mode']),
-  body('chatHistory.*.timestamp').isISO8601(),
+  body("name").trim().isLength({ min: 2 }),
+  body("phone")
+    .trim()
+    .matches(/^\+?[\d\s-]{7,15}$/),
+  body("email").trim().isEmail(),
+  body("ssn")
+    .trim()
+    .matches(/^\d{4}$/),
+  body("marriedOverTenOrDeceased").isBoolean(),
+  body("spouseName")
+    .if(body("marriedOverTenOrDeceased").equals("true"))
+    .trim()
+    .isLength({ min: 2 }),
+  body("spouseDOB")
+    .if(body("marriedOverTenOrDeceased").equals("true"))
+    .trim()
+    .matches(/^\d{4}-\d{2}-\d{2}$/),
+  body("spouseSSN")
+    .if(body("marriedOverTenOrDeceased").equals("true"))
+    .trim()
+    .matches(/^\d{4}$/),
+  body("jobs").isArray({ min: 1, max: 5 }),
+  body("jobs.*.business").trim().isLength({ min: 2 }),
+  body("jobs.*.title").trim().isLength({ min: 2 }),
+  body("jobs.*.startDate")
+    .trim()
+    .matches(/^\d{4}-\d{2}$/),
+  body("jobs.*.endDate")
+    .trim()
+    .custom((value) => value === "present" || /^\d{4}-\d{2}$/.test(value)),
+  body("jobs.*.payAmount").isFloat({ min: 0 }),
+  body("jobs.*.payFrequency").isIn([
+    "hourly",
+    "biweekly",
+    "monthly",
+    "annually",
+  ]),
+  body("medical.treatmentEndDate")
+    .optional()
+    .trim()
+    .matches(/^\d{4}-\d{2}$|^$/),
+  body("medical.primaryCare.name")
+    .optional()
+    .trim()
+    .matches(/^[a-zA-Z\s.,]+$/),
+  body("medical.primaryCare.zipCode")
+    .optional()
+    .trim()
+    .matches(/^\d{5}$|^$/),
+  body("medical.primaryCare.city").optional().trim(),
+  body("medical.primaryCare.state")
+    .optional()
+    .trim()
+    .matches(/^[A-Z]{2}$|^$/),
+  body("medical.primaryCare.phone")
+    .optional()
+    .trim()
+    .matches(/^\+?[\d\s-]{7,15}$|^$/),
+  body('medical.primaryCare.date').optional().trim().matches(/^\d{4}-\d{2}$|^$/),
+  
+  body("medical.specialist.name")
+    .optional()
+    .trim()
+    .matches(/^[a-zA-Z\s.,]+$/),
+  body("medical.specialist.zipCode")
+    .optional()
+    .trim()
+    .matches(/^\d{5}$|^$/),
+  body("medical.specialist.city").optional().trim(),
+  body("medical.specialist.state")
+    .optional()
+    .trim()
+    .matches(/^[A-Z]{2}$|^$/),
+  body("medical.specialist.phone")
+    .optional()
+    .trim()
+    .matches(/^\+?[\d\s-]{7,15}$|^$/),
+  body('medical.specialist.date').optional().trim().matches(/^\d{4}-\d{2}$|^$/),
+
+  body("medical.additionalDoctors").isArray(),
+  body("medical.additionalDoctors.*.name")
+    .optional()
+    .trim()
+    .matches(/^[a-zA-Z\s.,]+$/),
+  body("medical.additionalDoctors.*.phone")
+    .optional()
+    .trim()
+    .matches(/^\+?[\d\s-]{7,15}$|^$/),
+  body("medical.additionalDoctors.*.state")
+    .optional()
+    .trim()
+    .matches(/^[A-Z]{2}$|^$/),
+  body("medical.additionalDoctors.*.address").optional().trim(),
+  body("medical.additionalDoctors.*.zipCode")
+    .optional()
+    .trim()
+    .matches(/^\d{5}$|^$/),
+  body("medical.hospitalizations").isArray(),
+  body('medical.additionalDoctors.*.date').optional().trim().matches(/^\d{4}-\d{2}$|^$/),
+
+  body("medical.hospitalizations.*.phone")
+    .optional()
+    .trim()
+    .matches(/^\+?[\d\s-]{7,15}$|^$/),
+  body("medical.hospitalizations.*.date")
+    .optional()
+    .trim()
+    .matches(/^\d{4}-\d{2}$|^$/),
+  body("chatHistory").isArray(),
+  body("chatHistory.*.message").trim().notEmpty(),
+  body("chatHistory.*.type").isIn(["user", "avatar"]),
+  body("chatHistory.*.mode").isIn(["text_mode", "voice_mode"]),
+  body("chatHistory.*.timestamp").isISO8601(),
 ];
 
 // Helper function to generate PDF with pdfkit
@@ -769,140 +865,205 @@ async function generatePDF(formData) {
     pdfDoc.pipe(stream);
 
     // Add professional letterhead
-    pdfDoc.font('Helvetica-Bold').fontSize(18).fillColor('#1A3C5A')
-       .text('Liner Legal', 20, 20)
-       .fontSize(10).fillColor('#333333')
-       .text('4269 Pearl Road, Suite 104 Cleveland, OH', 20, 40)
-       .text('Phone:  (216) 282-1773 | Email: forms@linerlegal.com', 20, 50)
-       .moveDown();
+    pdfDoc
+      .font("Helvetica-Bold")
+      .fontSize(18)
+      .fillColor("#1A3C5A")
+      .text("Liner Legal", 20, 20)
+      .fontSize(10)
+      .fillColor("#333333")
+      .text("4269 Pearl Road, Suite 104 Cleveland, OH", 20, 40)
+      .text("Phone:  (216) 282-1773 | Email: forms@linerlegal.com", 20, 50)
+      .moveDown();
 
     // Add horizontal line
-    pdfDoc.moveTo(20, 70).lineTo(575, 70).strokeColor('#1A3C5A').stroke();
+    pdfDoc.moveTo(20, 70).lineTo(575, 70).strokeColor("#1A3C5A").stroke();
 
     // Title and date
-    pdfDoc.font('Helvetica-Bold').fontSize(16).fillColor('#1A3C5A')
-       .text('Client Intake Form Submission', { align: 'center' })
-       .moveDown(0.5);
-    pdfDoc.font('Helvetica').fontSize(10).fillColor('#333333')
-       .text(`Submission Date: ${new Date().toLocaleDateString()}`, { align: 'center' })
-       .moveDown(2);
+    pdfDoc
+      .font("Helvetica-Bold")
+      .fontSize(16)
+      .fillColor("#1A3C5A")
+      .text("Client Intake Form Submission", { align: "center" })
+      .moveDown(0.5);
+    pdfDoc
+      .font("Helvetica")
+      .fontSize(10)
+      .fillColor("#333333")
+      .text(`Submission Date: ${new Date().toLocaleDateString()}`, {
+        align: "center",
+      })
+      .moveDown(2);
 
     // Personal Information
-    pdfDoc.font('Helvetica-Bold').fontSize(12).fillColor('#1A3C5A')
-       .text('Personal Information')
-       .moveDown(0.5);
-    pdfDoc.font('Helvetica').fontSize(10).fillColor('#333333')
-       .text(`Name: ${formData.name}`)
-       .text(`Phone: ${formData.phone}`)
-       .text(`Email: ${formData.email}`)
-       .text(`SSN (Last 4 Digits): ${formData.ssn}`)
-       .text(`Married >10 Years or Deceased: ${formData.marriedOverTenOrDeceased ? 'Yes' : 'No'}`);
+    pdfDoc
+      .font("Helvetica-Bold")
+      .fontSize(12)
+      .fillColor("#1A3C5A")
+      .text("Personal Information")
+      .moveDown(0.5);
+    pdfDoc
+      .font("Helvetica")
+      .fontSize(10)
+      .fillColor("#333333")
+      .text(`Name: ${formData.name}`)
+      .text(`Phone: ${formData.phone}`)
+      .text(`Email: ${formData.email}`)
+      .text(`SSN (Last 4 Digits): ${formData.ssn}`)
+      .text(
+        `Married >10 Years or Deceased: ${
+          formData.marriedOverTenOrDeceased ? "Yes" : "No"
+        }`
+      );
     if (formData.marriedOverTenOrDeceased) {
-      pdfDoc.text(`Spouse Name: ${formData.spouseName || 'N/A'}`)
-            .text(`Spouse DOB: ${formData.spouseDOB || 'N/A'}`)
-            .text(`Spouse SSN (Last 4 Digits): ${formData.spouseSSN || 'N/A'}`);
+      pdfDoc
+        .text(`Spouse Name: ${formData.spouseName || "N/A"}`)
+        .text(`Spouse DOB: ${formData.spouseDOB || "N/A"}`)
+        .text(`Spouse SSN (Last 4 Digits): ${formData.spouseSSN || "N/A"}`);
     }
     pdfDoc.moveDown(1.5);
 
     // Employment History
-    pdfDoc.font('Helvetica-Bold').fontSize(12).fillColor('#1A3C5A')
-       .text('Employment History')
-       .moveDown(0.5);
+    pdfDoc
+      .font("Helvetica-Bold")
+      .fontSize(12)
+      .fillColor("#1A3C5A")
+      .text("Employment History")
+      .moveDown(0.5);
     formData.jobs.forEach((job, index) => {
-      pdfDoc.font('Helvetica-Bold').fontSize(10).fillColor('#333333')
-         .text(`Job ${index + 1}`)
-         .moveDown(0.2);
-      pdfDoc.font('Helvetica').fontSize(10)
-         .text(`Business: ${job.business}`)
-         .text(`Title: ${job.title}`)
-         .text(`Start Date: ${job.startDate}`)
-         .text(`End Date: ${job.endDate}`)
-         .text(`Pay: $${job.payAmount.toFixed(2)} ${job.payFrequency}`)
-         .moveDown(1);
+      pdfDoc
+        .font("Helvetica-Bold")
+        .fontSize(10)
+        .fillColor("#333333")
+        .text(`Job ${index + 1}`)
+        .moveDown(0.2);
+      pdfDoc
+        .font("Helvetica")
+        .fontSize(10)
+        .text(`Business: ${job.business}`)
+        .text(`Title: ${job.title}`)
+        .text(`Start Date: ${job.startDate}`)
+        .text(`End Date: ${job.endDate}`)
+        .text(`Pay: $${job.payAmount.toFixed(2)} ${job.payFrequency}`)
+        .moveDown(1);
     });
 
     // Medical Information
-    pdfDoc.font('Helvetica-Bold').fontSize(12).fillColor('#1A3C5A')
-       .text('Medical Information')
-       .moveDown(0.5);
-    pdfDoc.font('Helvetica').fontSize(10).fillColor('#333333')
-       .text(`Treatment End Date: ${formData.medical.treatmentEndDate || 'N/A'}`)
-       .moveDown(1);
+    pdfDoc
+      .font("Helvetica-Bold")
+      .fontSize(12)
+      .fillColor("#1A3C5A")
+      .text("Medical Information")
+      .moveDown(0.5);
+    pdfDoc
+      .font("Helvetica")
+      .fontSize(10)
+      .fillColor("#333333")
+      .text(`Treatment End Date: ${formData.medical.treatmentEndDate || "N/A"}`)
+      .moveDown(1);
 
-    pdfDoc.font('Helvetica-Bold').fontSize(10)
-       .text('Primary Care')
-       .moveDown(0.2);
-    pdfDoc.font('Helvetica').fontSize(10)
-       .text(`Name: ${formData.medical.primaryCare.name || 'N/A'}`)
-       .text(`Testing: ${formData.medical.primaryCare.testing || 'N/A'}`)
-       .text(`Address: ${formData.medical.primaryCare.address || 'N/A'}`)
-       .text(`Zip Code: ${formData.medical.primaryCare.zipCode || 'N/A'}`)
-       .text(`City: ${formData.medical.primaryCare.city || 'N/A'}`)
-        .text(`State: ${formData.medical.primaryCare.state || 'N/A'}`)
-        .text(`Phone: ${formData.medical.primaryCare.phone || 'N/A'}`)
-       .text(`Approximate Date: ${formData.medical.primaryCare.approximatedate || 'N/A'}`)
-       .moveDown(1);
+    pdfDoc
+      .font("Helvetica-Bold")
+      .fontSize(10)
+      .text("Primary Care")
+      .moveDown(0.2);
+    pdfDoc
+      .font("Helvetica")
+      .fontSize(10)
+      //  .text(`Name: ${formData.medical.primaryCare.name || 'N/A'}`)
+      //  .text(`Testing: ${formData.medical.primaryCare.testing || 'N/A'}`)
+      //  .text(`Address: ${formData.medical.primaryCare.address || 'N/A'}`)
+      //  .text(`Zip Code: ${formData.medical.primaryCare.zipCode || 'N/A'}`)
+      .text(`Name: ${formData.medical.primaryCare.name || "N/A"}`)
+      .text(`Testing: ${formData.medical.primaryCare.testing || "N/A"}`)
+      .text(`Address: ${formData.medical.primaryCare.address || "N/A"}`)
+      .text(`City: ${formData.medical.primaryCare.city || "N/A"}`)
+      .text(`State: ${formData.medical.primaryCare.state || "N/A"}`)
+      .text(`Zip Code: ${formData.medical.primaryCare.zipCode || "N/A"}`)
+      .text(`Phone: ${formData.medical.primaryCare.phone || "N/A"}`)
+      .text(`Approximate Date: ${formData.medical.primaryCare.date || 'N/A'}`)
+      .moveDown(1);
 
-    pdfDoc.font('Helvetica-Bold').fontSize(10)
-       .text('Specialist')
-       .moveDown(0.2);
-    pdfDoc.font('Helvetica').fontSize(10)
-       .text(`Name: ${formData.medical.specialist.name || 'N/A'}`)
-       .text(`Specialty: ${formData.medical.specialist.specialty || 'N/A'}`)
-       .text(`Testing: ${formData.medical.specialist.testing || 'N/A'}`)
-       .text(`Address: ${formData.medical.specialist.address || 'N/A'}`)
-       .text(`Zip Code: ${formData.medical.specialist.zipCode || 'N/A'}`)
-       .moveDown(1);
+    pdfDoc.font("Helvetica-Bold").fontSize(10).text("Specialist").moveDown(0.2);
+    pdfDoc
+      .font("Helvetica")
+      .fontSize(10)
+      .text(`Name: ${formData.medical.specialist.name || "N/A"}`)
+      .text(`Specialty: ${formData.medical.specialist.specialty || "N/A"}`)
+      .text(`Testing: ${formData.medical.specialist.testing || "N/A"}`)
+      .text(`Address: ${formData.medical.specialist.address || "N/A"}`)
+      .text(`City: ${formData.medical.specialist.city || "N/A"}`)
+      .text(`State: ${formData.medical.specialist.state || "N/A"}`)
+      .text(`Zip Code: ${formData.medical.specialist.zipCode || "N/A"}`)
+      .text(`Phone: ${formData.medical.specialist.phone || "N/A"}`)
+      .text(`Approximate Date: ${formData.medical.specialist.date || 'N/A'}`)
+      .moveDown(1);
 
     if (formData.medical.additionalDoctors.length > 0) {
-      pdfDoc.font('Helvetica-Bold').fontSize(10)
-         .text('Additional Doctors')
-         .moveDown(0.2);
-      formData.medical.additionalDoctors.forEach((doctor, index) => { // Renamed to avoid conflict
-        pdfDoc.font('Helvetica').fontSize(10)
-           .text(`Doctor ${index + 1}`)
-           .text(`Name: ${doctor.name || 'N/A'}`)
-           .text(`City: ${doctor.city || 'N/A'}`)
-           .text(`Phone: ${doctor.phone || 'N/A'}`)
-           .text(`State: ${doctor.state || 'N/A'}`)
-          .text(`Approximate Date: ${doctor.approximatedate || 'N/A'}`)
-          .text(`Address: ${doctor.address || 'N/A'}`)
-          .text(`Zip Code: ${doctor.zipCode || 'N/A'}`)
-
-           .moveDown(0.5);
+      pdfDoc
+        .font("Helvetica-Bold")
+        .fontSize(10)
+        .text("Additional Doctors")
+        .moveDown(0.2);
+      formData.medical.additionalDoctors.forEach((doctor, index) => {
+        // Renamed to avoid conflict
+        pdfDoc
+          .font("Helvetica")
+          .fontSize(10)
+          .text(`Doctor ${index + 1}`)
+          .text(`Name: ${doctor.name || "N/A"}`)
+          .text(`City: ${doctor.city || "N/A"}`)
+          .text(`Phone: ${doctor.phone || "N/A"}`)
+          .text(`State: ${doctor.state || "N/A"}`)
+          .text(`Address: ${doctor.address || "N/A"}`)
+          .text(`Zip Code: ${doctor.zipCode || "N/A"}`)
+          .text(`Approximate Date: ${doctor.date || 'N/A'}`)
+          .moveDown(0.5);
       });
     }
 
     if (formData.medical.hospitalizations.length > 0) {
-      pdfDoc.font('Helvetica-Bold').fontSize(10)
-         .text('Hospitalizations')
-         .moveDown(0.2);
+      pdfDoc
+        .font("Helvetica-Bold")
+        .fontSize(10)
+        .text("Hospitalizations")
+        .moveDown(0.2);
       formData.medical.hospitalizations.forEach((hosp, index) => {
-        pdfDoc.font('Helvetica').fontSize(10)
-           .text(`Hospitalization ${index + 1}`)
-           .text(`Name: ${hosp.name || 'N/A'}`)
-           .text(`Address: ${hosp.address || 'N/A'}`)
-           .text(`Phone: ${hosp.phone || 'N/A'}`)
-           .text(`Reason: ${hosp.reason || 'N/A'}`)
-           .text(`Date: ${hosp.date || 'N/A'}`)
-           .moveDown(0.5);
+        pdfDoc
+          .font("Helvetica")
+          .fontSize(10)
+          .text(`Hospitalization ${index + 1}`)
+          .text(`Name: ${hosp.name || "N/A"}`)
+          .text(`Address: ${hosp.address || "N/A"}`)
+          .text(`Phone: ${hosp.phone || "N/A"}`)
+          .text(`Reason: ${hosp.reason || "N/A"}`)
+          .text(`Date: ${hosp.date || "N/A"}`)
+          .moveDown(0.5);
       });
     }
 
     // Add footer
-    pdfDoc.font('Helvetica-Oblique').fontSize(8).fillColor('#666666')
-       .text('Confidential - For Internal Use Only', 20, pdfDoc.page.height - 50, { align: 'center' });
+    pdfDoc
+      .font("Helvetica-Oblique")
+      .fontSize(8)
+      .fillColor("#666666")
+      .text(
+        "Confidential - For Internal Use Only",
+        20,
+        pdfDoc.page.height - 50,
+        { align: "center" }
+      );
 
     pdfDoc.end();
 
-    stream.on('finish', () => resolve(pdfFileName));
-    stream.on('error', (err) => reject(err));
+    stream.on("finish", () => resolve(pdfFileName));
+    stream.on("error", (err) => reject(err));
   });
 }
 
 // Email transporter setup
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
@@ -910,10 +1071,12 @@ const transporter = nodemailer.createTransport({
 });
 
 // API Endpoint to Handle Form Submission
-app.post('/api/form-data', validateFormData, async (req, res) => {
+app.post("/api/form-data", validateFormData, async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array(), message: 'Validation failed' });
+    return res
+      .status(400)
+      .json({ errors: errors.array(), message: "Validation failed" });
   }
 
   try {
@@ -923,7 +1086,9 @@ app.post('/api/form-data', validateFormData, async (req, res) => {
       const twoYearsAgo = new Date();
       twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
       if (treatmentDate > new Date() || treatmentDate < twoYearsAgo) {
-        return res.status(400).json({ error: 'Treatment end date must be within the last two years' });
+        return res.status(400).json({
+          error: "Treatment end date must be within the last two years",
+        });
       }
     }
 
@@ -932,13 +1097,14 @@ app.post('/api/form-data', validateFormData, async (req, res) => {
       ...req.body,
       medical: {
         ...req.body.medical,
-        additionalDoctors: req.body.medical.additionalDoctors.filter(doc => 
-          doc.name || doc.city || doc.phone || doc.state
+        additionalDoctors: req.body.medical.additionalDoctors.filter(
+          (doc) => doc.name || doc.city || doc.phone || doc.state
         ),
-        hospitalizations: req.body.medical.hospitalizations.filter(hosp => 
-          hosp.name || hosp.address || hosp.phone || hosp.reason || hosp.date
-        )
-      }
+        hospitalizations: req.body.medical.hospitalizations.filter(
+          (hosp) =>
+            hosp.name || hosp.address || hosp.phone || hosp.reason || hosp.date
+        ),
+      },
     };
 
     // Save to MongoDB
@@ -952,24 +1118,25 @@ app.post('/api/form-data', validateFormData, async (req, res) => {
       // Send email with PDF attachment
       const mailOptions = {
         from: process.env.EMAIL_USER,
-        to: ['ammar@meetgabbi.com','ayaz.ext@gmail.com','Forms@linerlegal.com','Form@linerlegal.com'],
+        to: ["ammar@meetgabbi.com", "ayaz.ext@gmail.com"],
         subject: `SS application Form ${savedData.name}`,
         text: `Dear Team,\n\nA new form submission has been received from ${savedData.name}. Please find attached the PDF containing the submitted information.\n\nBest regards,\nSystem`,
         attachments: [{ filename: pdfFileName, path: `./${pdfFileName}` }],
       };
 
       await transporter.sendMail(mailOptions);
-      console.log('Email sent successfully');
+      console.log("Email sent successfully");
 
       // Clean up PDF file
       await fsPromises.unlink(pdfFileName);
     } catch (pdfError) {
-      console.error('Error generating PDF or sending email:', pdfError);
+      console.error("Error generating PDF or sending email:", pdfError);
     }
 
     // Send data to GoHighLevel webhook
     try {
-      const webhookUrl = 'https://services.leadconnectorhq.com/hooks/CECLKLJ2HKEDjXUL5Ibj/webhook-trigger/280d88e9-2564-423c-9ac6-9976ec6b7c60';
+      const webhookUrl =
+        "https://services.leadconnectorhq.com/hooks/CECLKLJ2HKEDjXUL5Ibj/webhook-trigger/280d88e9-2564-423c-9ac6-9976ec6b7c60";
       await axios.post(webhookUrl, {
         name: savedData.name,
         phone: savedData.phone,
@@ -981,26 +1148,27 @@ app.post('/api/form-data', validateFormData, async (req, res) => {
         spouseSSN: savedData.spouseSSN,
         jobs: savedData.jobs,
         medical: savedData.medical,
-        timestamp: savedData.timestamp
+        timestamp: savedData.timestamp,
       });
-      console.log('Data successfully sent to GoHighLevel webhook');
+      console.log("Data successfully sent to GoHighLevel webhook");
     } catch (webhookError) {
-      console.error('Error sending data to GoHighLevel webhook:', webhookError);
+      console.error("Error sending data to GoHighLevel webhook:", webhookError);
     }
 
-    res.status(201).json({ message: 'Form data submitted successfully', data: savedData });
+    res
+      .status(201)
+      .json({ message: "Form data submitted successfully", data: savedData });
   } catch (error) {
-    console.error('Error saving form data:', error);
-    res.status(500).json({ 
-      error: error.message || 'Internal server error',
-      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    console.error("Error saving form data:", error);
+    res.status(500).json({
+      error: error.message || "Internal server error",
+      details: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
 
-
-app.get('/api/test', (req, res) => {
-  res.json({ message: 'API is working correctly 🚀' });
+app.get("/api/test", (req, res) => {
+  res.json({ message: "API is working correctly 🚀" });
 });
 // Start Server
 app.listen(PORT, () => {
