@@ -555,6 +555,8 @@ const PDFDocument = require("pdfkit");
 const fs = require("fs");
 const fsPromises = require("fs").promises;
 const { body, validationResult } = require("express-validator");
+const pdf = require('pdf-creator-node');
+
 require("dotenv").config();
 
 const app = express();
@@ -856,211 +858,257 @@ const validateFormData = [
 ];
 
 // Helper function to generate PDF with pdfkit
+// async function generatePDF(formData) {
+//   return new Promise((resolve, reject) => {
+//     const pdfFileName = `form_submission_${formData._id}.pdf`;
+//     const pdfDoc = new PDFDocument({ margin: 50 }); // Renamed to avoid conflict
+//     const stream = fs.createWriteStream(pdfFileName);
+
+//     pdfDoc.pipe(stream);
+
+//     // Add professional letterhead
+//     pdfDoc
+//       .font("Helvetica-Bold")
+//       .fontSize(18)
+//       .fillColor("#1A3C5A")
+//       .text("Liner Legal", 20, 20)
+//       .fontSize(10)
+//       .fillColor("#333333")
+//       .text("4269 Pearl Road, Suite 104 Cleveland, OH", 20, 40)
+//       .text("Phone:  (216) 282-1773 | Email: forms@linerlegal.com", 20, 50)
+//       .moveDown();
+
+//     // Add horizontal line
+//     pdfDoc.moveTo(20, 70).lineTo(575, 70).strokeColor("#1A3C5A").stroke();
+
+//     // Title and date
+//     pdfDoc
+//       .font("Helvetica-Bold")
+//       .fontSize(16)
+//       .fillColor("#1A3C5A")
+//       .text("Client Intake Form Submission", { align: "center" })
+//       .moveDown(0.5);
+//     pdfDoc
+//       .font("Helvetica")
+//       .fontSize(10)
+//       .fillColor("#333333")
+//       .text(`Submission Date: ${new Date().toLocaleDateString()}`, {
+//         align: "center",
+//       })
+//       .moveDown(2);
+
+//     // Personal Information
+//     pdfDoc
+//       .font("Helvetica-Bold")
+//       .fontSize(12)
+//       .fillColor("#1A3C5A")
+//       .text("Personal Information")
+//       .moveDown(0.5);
+//     pdfDoc
+//       .font("Helvetica")
+//       .fontSize(10)
+//       .fillColor("#333333")
+//       .text(`Name: ${formData.name}`)
+//       .text(`Phone: ${formData.phone}`)
+//       .text(`Email: ${formData.email}`)
+//       .text(`SSN (Last 4 Digits): ${formData.ssn}`)
+//       .text(
+//         `Married >10 Years or Deceased: ${
+//           formData.marriedOverTenOrDeceased ? "Yes" : "No"
+//         }`
+//       );
+//     if (formData.marriedOverTenOrDeceased) {
+//       pdfDoc
+//         .text(`Spouse Name: ${formData.spouseName || "N/A"}`)
+//         .text(`Spouse DOB: ${formData.spouseDOB || "N/A"}`)
+//         .text(`Spouse SSN (Last 4 Digits): ${formData.spouseSSN || "N/A"}`);
+//     }
+//     pdfDoc.moveDown(1.5);
+
+//     // Employment History
+//     pdfDoc
+//       .font("Helvetica-Bold")
+//       .fontSize(12)
+//       .fillColor("#1A3C5A")
+//       .text("Employment History")
+//       .moveDown(0.5);
+//     formData.jobs.forEach((job, index) => {
+//       pdfDoc
+//         .font("Helvetica-Bold")
+//         .fontSize(10)
+//         .fillColor("#333333")
+//         .text(`Job ${index + 1}`)
+//         .moveDown(0.2);
+//       pdfDoc
+//         .font("Helvetica")
+//         .fontSize(10)
+//         .text(`Business: ${job.business}`)
+//         .text(`Title: ${job.title}`)
+//         .text(`Start Date: ${job.startDate}`)
+//         .text(`End Date: ${job.endDate}`)
+//         .text(`Pay: $${job.payAmount.toFixed(2)} ${job.payFrequency}`)
+//         .moveDown(1);
+//     });
+
+//     // Medical Information
+//     pdfDoc
+//       .font("Helvetica-Bold")
+//       .fontSize(12)
+//       .fillColor("#1A3C5A")
+//       .text("Medical Information")
+//       .moveDown(0.5);
+//     pdfDoc
+//       .font("Helvetica")
+//       .fontSize(10)
+//       .fillColor("#333333")
+//       .text(`Treatment End Date: ${formData.medical.treatmentEndDate || "N/A"}`)
+//       .moveDown(1);
+
+//     pdfDoc
+//       .font("Helvetica-Bold")
+//       .fontSize(10)
+//       .text("Primary Care")
+//       .moveDown(0.2);
+//     pdfDoc
+//       .font("Helvetica")
+//       .fontSize(10)
+//       //  .text(`Name: ${formData.medical.primaryCare.name || 'N/A'}`)
+//       //  .text(`Testing: ${formData.medical.primaryCare.testing || 'N/A'}`)
+//       //  .text(`Address: ${formData.medical.primaryCare.address || 'N/A'}`)
+//       //  .text(`Zip Code: ${formData.medical.primaryCare.zipCode || 'N/A'}`)
+//       .text(`Name: ${formData.medical.primaryCare.name || "N/A"}`)
+//       .text(`Testing: ${formData.medical.primaryCare.testing || "N/A"}`)
+//       .text(`Address: ${formData.medical.primaryCare.address || "N/A"}`)
+//       .text(`City: ${formData.medical.primaryCare.city || "N/A"}`)
+//       .text(`State: ${formData.medical.primaryCare.state || "N/A"}`)
+//       .text(`Zip Code: ${formData.medical.primaryCare.zipCode || "N/A"}`)
+//       .text(`Phone: ${formData.medical.primaryCare.phone || "N/A"}`)
+//       .text(`Approximate Date: ${formData.medical.primaryCare.date || 'N/A'}`)
+//       .moveDown(1);
+
+//     pdfDoc.font("Helvetica-Bold").fontSize(10).text("Specialist").moveDown(0.2);
+//     pdfDoc
+//       .font("Helvetica")
+//       .fontSize(10)
+//       .text(`Name: ${formData.medical.specialist.name || "N/A"}`)
+//       .text(`Specialty: ${formData.medical.specialist.specialty || "N/A"}`)
+//       .text(`Testing: ${formData.medical.specialist.testing || "N/A"}`)
+//       .text(`Address: ${formData.medical.specialist.address || "N/A"}`)
+//       .text(`City: ${formData.medical.specialist.city || "N/A"}`)
+//       .text(`State: ${formData.medical.specialist.state || "N/A"}`)
+//       .text(`Zip Code: ${formData.medical.specialist.zipCode || "N/A"}`)
+//       .text(`Phone: ${formData.medical.specialist.phone || "N/A"}`)
+//       .text(`Approximate Date: ${formData.medical.specialist.date || 'N/A'}`)
+//       .moveDown(1);
+
+//     if (formData.medical.additionalDoctors.length > 0) {
+//       pdfDoc
+//         .font("Helvetica-Bold")
+//         .fontSize(10)
+//         .text("Additional Doctors")
+//         .moveDown(0.2);
+//       formData.medical.additionalDoctors.forEach((doctor, index) => {
+//         // Renamed to avoid conflict
+//         pdfDoc
+//           .font("Helvetica")
+//           .fontSize(10)
+//           .text(`Doctor ${index + 1}`)
+//           .text(`Name: ${doctor.name || "N/A"}`)
+//           .text(`City: ${doctor.city || "N/A"}`)
+//           .text(`Phone: ${doctor.phone || "N/A"}`)
+//           .text(`State: ${doctor.state || "N/A"}`)
+//           .text(`Address: ${doctor.address || "N/A"}`)
+//           .text(`Zip Code: ${doctor.zipCode || "N/A"}`)
+//           .text(`Approximate Date: ${doctor.date || 'N/A'}`)
+//           .moveDown(0.5);
+//       });
+//     }
+
+//     if (formData.medical.hospitalizations.length > 0) {
+//       pdfDoc
+//         .font("Helvetica-Bold")
+//         .fontSize(10)
+//         .text("Hospitalizations")
+//         .moveDown(0.2);
+//       formData.medical.hospitalizations.forEach((hosp, index) => {
+//         pdfDoc
+//           .font("Helvetica")
+//           .fontSize(10)
+//           .text(`Hospitalization ${index + 1}`)
+//           .text(`Name: ${hosp.name || "N/A"}`)
+//           .text(`Address: ${hosp.address || "N/A"}`)
+//           .text(`Phone: ${hosp.phone || "N/A"}`)
+//           .text(`Reason: ${hosp.reason || "N/A"}`)
+//           .text(`Date: ${hosp.date || "N/A"}`)
+//           .moveDown(0.5);
+//       });
+//     }
+
+//     // Add footer
+//     pdfDoc
+//       .font("Helvetica-Oblique")
+//       .fontSize(8)
+//       .fillColor("#666666")
+//       .text(
+//         "Confidential - For Internal Use Only",
+//         20,
+//         pdfDoc.page.height - 50,
+//         { align: "center" }
+//       );
+
+//     pdfDoc.end();
+
+//     stream.on("finish", () => resolve(pdfFileName));
+//     stream.on("error", (err) => reject(err));
+//   });
+// }
+
+
+
 async function generatePDF(formData) {
-  return new Promise((resolve, reject) => {
-    const pdfFileName = `form_submission_${formData._id}.pdf`;
-    const pdfDoc = new PDFDocument({ margin: 50 }); // Renamed to avoid conflict
-    const stream = fs.createWriteStream(pdfFileName);
+  try {
+    // Convert Mongoose document to plain JavaScript object
+    const data = formData.toObject ? formData.toObject() : formData;
+    
+    // Prepare the template data
+    const document = {
+      html: fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8'),
+      data: {
+        formData: {
+          ...data,
+          // Ensure all nested objects exist
+          medical: data.medical || {
+            primaryCare: {},
+            specialist: {},
+            additionalDoctors: [],
+            hospitalizations: []
+          },
+          // Ensure jobs array exists
+          jobs: data.jobs || []
+        }
+      },
+      path: `./form_submission_${data._id}.pdf`,
+      type: "",
+      // Add runtime options for Handlebars
+      "runtimeOptions": {
+        "allowProtoPropertiesByDefault": true,
+        "allowProtoMethodsByDefault": true
+      }
+    };
 
-    pdfDoc.pipe(stream);
+    const options = {
+      format: "A4",
+      orientation: "portrait",
+      border: "10mm"
+    };
 
-    // Add professional letterhead
-    pdfDoc
-      .font("Helvetica-Bold")
-      .fontSize(18)
-      .fillColor("#1A3C5A")
-      .text("Liner Legal", 20, 20)
-      .fontSize(10)
-      .fillColor("#333333")
-      .text("4269 Pearl Road, Suite 104 Cleveland, OH", 20, 40)
-      .text("Phone:  (216) 282-1773 | Email: forms@linerlegal.com", 20, 50)
-      .moveDown();
-
-    // Add horizontal line
-    pdfDoc.moveTo(20, 70).lineTo(575, 70).strokeColor("#1A3C5A").stroke();
-
-    // Title and date
-    pdfDoc
-      .font("Helvetica-Bold")
-      .fontSize(16)
-      .fillColor("#1A3C5A")
-      .text("Client Intake Form Submission", { align: "center" })
-      .moveDown(0.5);
-    pdfDoc
-      .font("Helvetica")
-      .fontSize(10)
-      .fillColor("#333333")
-      .text(`Submission Date: ${new Date().toLocaleDateString()}`, {
-        align: "center",
-      })
-      .moveDown(2);
-
-    // Personal Information
-    pdfDoc
-      .font("Helvetica-Bold")
-      .fontSize(12)
-      .fillColor("#1A3C5A")
-      .text("Personal Information")
-      .moveDown(0.5);
-    pdfDoc
-      .font("Helvetica")
-      .fontSize(10)
-      .fillColor("#333333")
-      .text(`Name: ${formData.name}`)
-      .text(`Phone: ${formData.phone}`)
-      .text(`Email: ${formData.email}`)
-      .text(`SSN (Last 4 Digits): ${formData.ssn}`)
-      .text(
-        `Married >10 Years or Deceased: ${
-          formData.marriedOverTenOrDeceased ? "Yes" : "No"
-        }`
-      );
-    if (formData.marriedOverTenOrDeceased) {
-      pdfDoc
-        .text(`Spouse Name: ${formData.spouseName || "N/A"}`)
-        .text(`Spouse DOB: ${formData.spouseDOB || "N/A"}`)
-        .text(`Spouse SSN (Last 4 Digits): ${formData.spouseSSN || "N/A"}`);
-    }
-    pdfDoc.moveDown(1.5);
-
-    // Employment History
-    pdfDoc
-      .font("Helvetica-Bold")
-      .fontSize(12)
-      .fillColor("#1A3C5A")
-      .text("Employment History")
-      .moveDown(0.5);
-    formData.jobs.forEach((job, index) => {
-      pdfDoc
-        .font("Helvetica-Bold")
-        .fontSize(10)
-        .fillColor("#333333")
-        .text(`Job ${index + 1}`)
-        .moveDown(0.2);
-      pdfDoc
-        .font("Helvetica")
-        .fontSize(10)
-        .text(`Business: ${job.business}`)
-        .text(`Title: ${job.title}`)
-        .text(`Start Date: ${job.startDate}`)
-        .text(`End Date: ${job.endDate}`)
-        .text(`Pay: $${job.payAmount.toFixed(2)} ${job.payFrequency}`)
-        .moveDown(1);
-    });
-
-    // Medical Information
-    pdfDoc
-      .font("Helvetica-Bold")
-      .fontSize(12)
-      .fillColor("#1A3C5A")
-      .text("Medical Information")
-      .moveDown(0.5);
-    pdfDoc
-      .font("Helvetica")
-      .fontSize(10)
-      .fillColor("#333333")
-      .text(`Treatment End Date: ${formData.medical.treatmentEndDate || "N/A"}`)
-      .moveDown(1);
-
-    pdfDoc
-      .font("Helvetica-Bold")
-      .fontSize(10)
-      .text("Primary Care")
-      .moveDown(0.2);
-    pdfDoc
-      .font("Helvetica")
-      .fontSize(10)
-      //  .text(`Name: ${formData.medical.primaryCare.name || 'N/A'}`)
-      //  .text(`Testing: ${formData.medical.primaryCare.testing || 'N/A'}`)
-      //  .text(`Address: ${formData.medical.primaryCare.address || 'N/A'}`)
-      //  .text(`Zip Code: ${formData.medical.primaryCare.zipCode || 'N/A'}`)
-      .text(`Name: ${formData.medical.primaryCare.name || "N/A"}`)
-      .text(`Testing: ${formData.medical.primaryCare.testing || "N/A"}`)
-      .text(`Address: ${formData.medical.primaryCare.address || "N/A"}`)
-      .text(`City: ${formData.medical.primaryCare.city || "N/A"}`)
-      .text(`State: ${formData.medical.primaryCare.state || "N/A"}`)
-      .text(`Zip Code: ${formData.medical.primaryCare.zipCode || "N/A"}`)
-      .text(`Phone: ${formData.medical.primaryCare.phone || "N/A"}`)
-      .text(`Approximate Date: ${formData.medical.primaryCare.date || 'N/A'}`)
-      .moveDown(1);
-
-    pdfDoc.font("Helvetica-Bold").fontSize(10).text("Specialist").moveDown(0.2);
-    pdfDoc
-      .font("Helvetica")
-      .fontSize(10)
-      .text(`Name: ${formData.medical.specialist.name || "N/A"}`)
-      .text(`Specialty: ${formData.medical.specialist.specialty || "N/A"}`)
-      .text(`Testing: ${formData.medical.specialist.testing || "N/A"}`)
-      .text(`Address: ${formData.medical.specialist.address || "N/A"}`)
-      .text(`City: ${formData.medical.specialist.city || "N/A"}`)
-      .text(`State: ${formData.medical.specialist.state || "N/A"}`)
-      .text(`Zip Code: ${formData.medical.specialist.zipCode || "N/A"}`)
-      .text(`Phone: ${formData.medical.specialist.phone || "N/A"}`)
-      .text(`Approximate Date: ${formData.medical.specialist.date || 'N/A'}`)
-      .moveDown(1);
-
-    if (formData.medical.additionalDoctors.length > 0) {
-      pdfDoc
-        .font("Helvetica-Bold")
-        .fontSize(10)
-        .text("Additional Doctors")
-        .moveDown(0.2);
-      formData.medical.additionalDoctors.forEach((doctor, index) => {
-        // Renamed to avoid conflict
-        pdfDoc
-          .font("Helvetica")
-          .fontSize(10)
-          .text(`Doctor ${index + 1}`)
-          .text(`Name: ${doctor.name || "N/A"}`)
-          .text(`City: ${doctor.city || "N/A"}`)
-          .text(`Phone: ${doctor.phone || "N/A"}`)
-          .text(`State: ${doctor.state || "N/A"}`)
-          .text(`Address: ${doctor.address || "N/A"}`)
-          .text(`Zip Code: ${doctor.zipCode || "N/A"}`)
-          .text(`Approximate Date: ${doctor.date || 'N/A'}`)
-          .moveDown(0.5);
-      });
-    }
-
-    if (formData.medical.hospitalizations.length > 0) {
-      pdfDoc
-        .font("Helvetica-Bold")
-        .fontSize(10)
-        .text("Hospitalizations")
-        .moveDown(0.2);
-      formData.medical.hospitalizations.forEach((hosp, index) => {
-        pdfDoc
-          .font("Helvetica")
-          .fontSize(10)
-          .text(`Hospitalization ${index + 1}`)
-          .text(`Name: ${hosp.name || "N/A"}`)
-          .text(`Address: ${hosp.address || "N/A"}`)
-          .text(`Phone: ${hosp.phone || "N/A"}`)
-          .text(`Reason: ${hosp.reason || "N/A"}`)
-          .text(`Date: ${hosp.date || "N/A"}`)
-          .moveDown(0.5);
-      });
-    }
-
-    // Add footer
-    pdfDoc
-      .font("Helvetica-Oblique")
-      .fontSize(8)
-      .fillColor("#666666")
-      .text(
-        "Confidential - For Internal Use Only",
-        20,
-        pdfDoc.page.height - 50,
-        { align: "center" }
-      );
-
-    pdfDoc.end();
-
-    stream.on("finish", () => resolve(pdfFileName));
-    stream.on("error", (err) => reject(err));
-  });
+    const res = await pdf.create(document, options);
+    return res.filename;
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    throw error;
+  }
 }
-
 // Email transporter setup
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -1121,7 +1169,8 @@ app.post("/api/form-data", validateFormData, async (req, res) => {
         to: ["ammar@meetgabbi.com", "ayaz.ext@gmail.com"],
         subject: `SS application Form ${savedData.name}`,
         text: `Dear Team,\n\nA new form submission has been received from ${savedData.name}. Please find attached the PDF containing the submitted information.\n\nBest regards,\nSystem`,
-        attachments: [{ filename: pdfFileName, path: `./${pdfFileName}` }],
+        attachments: [{ filename: `form_submission_${savedData._id}.pdf`,
+          path: pdfFileName}],
       };
 
       await transporter.sendMail(mailOptions);
