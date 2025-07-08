@@ -551,11 +551,16 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const axios = require("axios");
 const nodemailer = require("nodemailer");
-const PDFDocument = require("pdfkit");
-const fs = require("fs");
+// const PDFDocument = require("pdfkit");
+// const fs = require("fs");
 const fsPromises = require("fs").promises;
 const { body, validationResult } = require("express-validator");
 const pdf = require('pdf-creator-node');
+const { PDFDocument, rgb } = require('pdf-lib');
+const puppeteer = require('puppeteer');
+const path = require('path')
+const fs = require('fs').promises;
+const handlebars = require('handlebars');
 
 require("dotenv").config();
 
@@ -1065,50 +1070,201 @@ const validateFormData = [
 
 
 
+// async function generatePDF(formData) {
+//   return new Promise((resolve, reject) => {
+//     const pdfFileName = `SS_App_Prep_${Date.now()}.pdf`;
+//     const pdfDoc = new PDFDocument({ margin: 50 });
+//     const stream = fs.createWriteStream(pdfFileName);
+
+//     pdfDoc.pipe(stream);
+
+//     // Page 1 - SS App Prep
+//     pdfDoc.font('Helvetica').fontSize(12);
+    
+//     // Title
+//     pdfDoc.text('SS App Prep', { align: 'center' }).moveDown(2);
+    
+//     // Personal Information
+//     pdfDoc.text('Name: ' + (formData.name || ''));
+//     pdfDoc.text('Last 4 SSN: ' + (formData.last4SSN || '')).moveDown(2);
+    
+//     // Marriage Information
+//     pdfDoc.text('Marriage Information');
+//     pdfDoc.text('Were you married over 10 years or did your spouse pass away during your marriage?');
+//     pdfDoc.text(`☐ Yes ${formData.marriedOver10OrDeceased ? '☒' : '☐'} No ${!formData.marriedOver10OrDeceased ? '☒' : '☐'}`);
+//     pdfDoc.text('Name of spouse/prior spouse: ' + (formData.spouseName || ''));
+//     pdfDoc.text('Spouse date of birth: ' + (formData.spouseDOB || ''));
+//     pdfDoc.text('Spouse SSN: ' + (formData.spouseSSN || '')).moveDown(2);
+    
+//     // Employment Information
+//     pdfDoc.text('Employment Information').moveDown(1);
+    
+//     // Jobs (up to 5)
+//     const jobs = formData.jobs || [];
+//     for (let i = 0; i < 5; i++) {
+//       const job = jobs[i] || {};
+//       pdfDoc.text(`Job ${i + 1}`);
+//       pdfDoc.text('Kind of business of employer: ' + (job.business || ''));
+//       pdfDoc.text('Job Title: ' + (job.title || ''));
+//       pdfDoc.text('Start date (approximate month and year): ' + (job.startDate || ''));
+//       pdfDoc.text('End date: ' + (job.endDate || ''));
+//       pdfDoc.text('Pay (indicate if hourly, biweekly, monthly or annually): ' + (job.pay || ''));
+//       pdfDoc.moveDown(1);
+//     }
+    
+//     // Add note about 5 most recent employers
+//     pdfDoc.text('(5 most recent employers in the last 5 years)');
+    
+//     // Page 2 - Job 5 and Medical Information
+//     pdfDoc.addPage();
+//     pdfDoc.font('Helvetica').fontSize(12);
+    
+//     // Job 5 (if exists)
+//     if (jobs[4]) {
+//       const job = jobs[4];
+//       pdfDoc.text('Job 5');
+//       pdfDoc.text('Kind of business of employer: ' + (job.business || ''));
+//       pdfDoc.text('Job Title: ' + (job.title || ''));
+//       pdfDoc.text('Start date (approximate month and year): ' + (job.startDate || ''));
+//       pdfDoc.text('End date: ' + (job.endDate || ''));
+//       pdfDoc.text('Pay (indicate if hourly, biweekly, monthly or annually): ' + (job.pay || ''));
+//       pdfDoc.moveDown(1);
+//     }
+    
+//     // Medical Information
+//     pdfDoc.text('Medical Information').moveDown(1);
+//     pdfDoc.text('Please provide information for treatment in the last two years:').moveDown(1);
+    
+//     // Primary Care
+//     pdfDoc.text('Primary Care/Family Doctor Name: ' + (formData.medical?.primaryCare?.name || ''));
+//     pdfDoc.text('Special testing/imaging ordered: ' + (formData.medical?.primaryCare?.testing || ''));
+//     pdfDoc.text('Address: ' + (formData.medical?.primaryCare?.address || ''));
+//     pdfDoc.text('City: ' + (formData.medical?.primaryCare?.city || '') + 
+//                 ' State: ' + (formData.medical?.primaryCare?.state || ''));
+//     pdfDoc.text('Zip Code: ' + (formData.medical?.primaryCare?.zipCode || '') + 
+//                 ' Phone: ' + (formData.medical?.primaryCare?.phone || '')).moveDown(1);
+    
+//     // Specialist
+//     pdfDoc.text('Specialist Doctor Name: ' + (formData.medical?.specialist?.name || ''));
+//     pdfDoc.text('Area of Specialty: ' + (formData.medical?.specialist?.specialty || ''));
+//     pdfDoc.text('Special testing/imaging ordered: ' + (formData.medical?.specialist?.testing || ''));
+//     pdfDoc.text('Address: ' + (formData.medical?.specialist?.address || ''));
+//     pdfDoc.text('City: ' + (formData.medical?.specialist?.city || '') + 
+//                 ' State: ' + (formData.medical?.specialist?.state || ''));
+//     pdfDoc.text('Zip Code: ' + (formData.medical?.specialist?.zipCode || '') + 
+//                 ' Phone: ' + (formData.medical?.specialist?.phone || '')).moveDown(1);
+    
+//     // Additional doctors
+//     pdfDoc.text('Additional doctors:').moveDown(1);
+    
+//     // Page 3 - Hospitalizations
+//     pdfDoc.addPage();
+//     pdfDoc.font('Helvetica').fontSize(12);
+    
+//     pdfDoc.text('Any hospitalizations, surgeries, ER visits, important medical testing/imaging, ' + 
+//                'provide name/address/phone and reason for treatment and approximately when treatment occurred:').moveDown(1);
+    
+//     // Primary Care (again)
+//     pdfDoc.text('Primary Care/Family Doctor Name: ' + (formData.medical?.primaryCare?.name || ''));
+//     pdfDoc.text('Special testing/imaging ordered: ' + (formData.medical?.primaryCare?.testing || ''));
+//     pdfDoc.text('Address: ' + (formData.medical?.primaryCare?.address || ''));
+//     pdfDoc.text('City: ' + (formData.medical?.primaryCare?.city || '') + 
+//                 ' State: ' + (formData.medical?.primaryCare?.state || ''));
+//     pdfDoc.text('Zip Code: ' + (formData.medical?.primaryCare?.zipCode || '') + 
+//                 ' Phone: ' + (formData.medical?.primaryCare?.phone || ''));
+    
+//     pdfDoc.end();
+
+//     stream.on('finish', () => resolve(pdfFileName));
+//     stream.on('error', (err) => reject(err));
+//   });
+// }
+
 async function generatePDF(formData) {
   try {
-    // Convert Mongoose document to plain JavaScript object
+    // 1. Convert Mongoose document to plain JavaScript object
     const data = formData.toObject ? formData.toObject() : formData;
     
-    // Prepare the template data
-    const document = {
-      html: fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8'),
-      data: {
-        formData: {
-          ...data,
-          // Ensure all nested objects exist
-          medical: data.medical || {
-            primaryCare: {},
-            specialist: {},
-            additionalDoctors: [],
-            hospitalizations: []
-          },
-          // Ensure jobs array exists
-          jobs: data.jobs || []
-        }
-      },
-      path: `./form_submission_${data._id}.pdf`,
-      type: "",
-      // Add runtime options for Handlebars
-      "runtimeOptions": {
-        "allowProtoPropertiesByDefault": true,
-        "allowProtoMethodsByDefault": true
+    // 2. Load template
+    const templatePath = path.join(__dirname, 'template.html');
+    const htmlTemplate = await fs.readFile(templatePath, 'utf8');
+
+    // 3. Prepare template data with proper structure
+    const templateData = {
+      name: data.name,
+      ssn: data.ssn,
+      marriedOverTenOrDeceased: data.marriedOverTenOrDeceased,
+      spouseName: data.spouseName,
+      spouseDOB: data.spouseDOB,
+      spouseSSN: data.spouseSSN,
+      jobs: (data.jobs || []).map(job => ({
+        business: job.business,
+        title: job.title,
+        startDate: job.startDate,
+        endDate: job.endDate === 'present' ? 'Present' : job.endDate,
+        payAmount: job.payAmount,
+        payFrequency: job.payFrequency
+      })),
+      medical: {
+        primaryCare: data.medical?.primaryCare || {},
+        specialist: data.medical?.specialist || {},
+        additionalDoctors: data.medical?.additionalDoctors || [],
+        hospitalizations: data.medical?.hospitalizations || []
       }
     };
 
-    const options = {
-      format: "A4",
-      orientation: "portrait",
-      border: "10mm"
-    };
+    // 4. Compile template with safe access
+    const template = handlebars.compile(htmlTemplate, {
+      noEscape: true,
+      allowProtoPropertiesByDefault: true,
+      allowProtoMethodsByDefault: true
+    });
+    
+    const html = template(templateData);
 
-    const res = await pdf.create(document, options);
-    return res.filename;
+    // 5. Debug: Save HTML for inspection
+    await fs.writeFile('debug_output.html', html);
+    console.log('Template data:', JSON.stringify(templateData, null, 2));
+
+    // 6. Generate PDF
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    const page = await browser.newPage();
+    
+    await page.setContent(html, {
+      waitUntil: 'networkidle0',
+      timeout: 30000
+    });
+
+    const pdfFileName = `SS_App_${Date.now()}.pdf`;
+    await page.pdf({
+      path: pdfFileName,
+      format: 'A4',
+     
+      printBackground: true
+    });
+
+    await browser.close();
+    return pdfFileName;
   } catch (error) {
-    console.error('Error generating PDF:', error);
+    console.error('PDF generation failed:', error);
     throw error;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 // Email transporter setup
 const transporter = nodemailer.createTransport({
   service: "gmail",

@@ -2,133 +2,89 @@
 <html>
 <head>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.5;
-    }
-    .section {
-      margin-bottom: 20px;
-    }
-    .section-title {
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-    .job {
-      margin-bottom: 15px;
-    }
-    .job-title {
-      font-weight: bold;
-    }
-    .field {
-      margin-bottom: 5px;
-    }
-    .checkbox {
-      display: inline-block;
-      margin-right: 15px;
-    }
-    .page-break {
-      page-break-after: always;
-    }
+    body { font-family: Arial, sans-serif; margin: 0px; padding: 0px; line-height: 1.6; width: 100%;}
+    .form-title { text-align: center; font-size: 30px; margin-bottom: 30px; background-color: #244060; color: white; width: 100%; padding: 20px; }
+    .section { margin: 25px; }
+    .section-title { font-weight: bold; margin-bottom: 10px; }
+    .field { margin-bottom: 15px; }
+    .checkbox { display: inline-block; margin-right: 15px; }
+    .job { margin-bottom: 20px; }
   </style>
 </head>
 <body>
-  <!-- Page 1 -->
-  <div class="section">
-    <div style="text-align: center; font-size: 18px; margin-bottom: 20px;">
-      SS App Prep
-    </div>
-    
-    <div class="field">Name: {{formData.name}}</div>
-    <div class="field">Last 4 SSN: {{formData.ssn}}</div>
+  <div class="form-title">SS App Prep</div>
+  
+  <div class="section" style="display:  flex ; width: 100% ;   ">
+    <div class="field" style="width: 70%; border-bottom: 1px solid #000; padding-bottom: 4px; "><strong >Name:</strong> {{name}}</div> <br/>
+    <div class="field" style="width: 30%; border-bottom: 1px solid #000; padding-bottom: 4px; "><strong >Last 4 SSN:</strong> {{ssn}}</div>
   </div>
 
   <div class="section">
-    <div class="section-title">Marriage Information</div>
+    <div class="section-title" style="text-decoration: underline;">Marriage Information</div>
     <div class="field">
-      Were you married over 10 years or did your spouse pass away during your marriage? 
-      <span class="checkbox">□ {{#if formData.marriedOverTenOrDeceased}}✓{{/if}} Yes</span>
-      <span class="checkbox">□ {{#unless formData.marriedOverTenOrDeceased}}✓{{/unless}} No</span>
+      <strong>Were you married over 10 years or did your spouse pass away during your marriage?</strong>
+      <span class="checkbox">{{#if marriedOverTenOrDeceased}}✓{{else}}□{{/if}} Yes</span>
+      <span class="checkbox">{{#unless marriedOverTenOrDeceased}}✓{{else}}□{{/unless}} No</span>
     </div>
-    {{#if formData.marriedOverTenOrDeceased}}
-    <div class="field">Name of spouse/prior spouse: {{formData.spouseName}}</div>
-    <div class="field">Spouse date of birth: {{formData.spouseDOB}}</div>
-    <div class="field">Spouse SSN: {{formData.spouseSSN}}</div>
+    {{#if marriedOverTenOrDeceased}}
+    <div style="display:  flex ; width: 100% ;   ">
+
+      <div class="field" style="width: 70%; border-bottom: 1px solid #000; padding-bottom: 4px; "><strong>Spouse Name:</strong> {{spouseName}}</div> <br/>
+      <div class="field" style="width: 30%; border-bottom: 1px solid #000; padding-bottom: 4px; "><strong>Spouse DOB:</strong> {{spouseDOB}}</div>
+    </div>
+    <div class="field"><strong>Spouse SSN:</strong> {{spouseSSN}}</div>
     {{/if}}
   </div>
 
   <div class="section">
     <div class="section-title">Employment Information</div>
-    {{#each formData.jobs}}
+    <div class="field">(5 most recent employers in the last 5 years)</div>
+    {{#each jobs}}
     <div class="job">
-      <div class="job-title">Job {{@index}}</div>
-      <div class="field">Kind of business of employer: {{this.business}}</div>
-      <div class="field">Job Title: {{this.title}}</div>
-      <div class="field">Start date (approximate month and year): {{this.startDate}}</div>
-      <div class="field">End date: {{this.endDate}}</div>
-      <div class="field">Pay (indicate if hourly, biweekly, monthly or annually): {{this.payAmount}} {{this.payFrequency}}</div>
+      <div><strong>Job {{@index}}</strong></div>
+      <div class="field"><strong>Business:</strong> {{business}}</div>
+      <div class="field"><strong>Title:</strong> {{title}}</div>
+      <div class="field"><strong>Start Date:</strong> {{startDate}}</div>
+      <div class="field"><strong>End Date:</strong> {{endDate}}</div>
+      <div class="field"><strong>Pay:</strong> ${{payAmount}} {{payFrequency}}</div>
     </div>
     {{/each}}
-    <div class="field">(5 most recent employers in the last 5 years)</div>
   </div>
 
-  <!-- Page 2 -->
-  <div class="page-break"></div>
-  
   <div class="section">
     <div class="section-title">Medical Information</div>
-    <div class="field">Please provide information for treatment in the last two years:</div>
     
     <div class="section">
-      <div class="section-title">Primary Care/Family Doctor</div>
-      <div class="field">Name: {{formData.medical.primaryCare.name}}</div>
-      <div class="field">Special testing/imaging ordered: {{formData.medical.primaryCare.testing}}</div>
-      <div class="field">Address: {{formData.medical.primaryCare.address}}</div>
-      <div class="field">City: {{formData.medical.primaryCare.city}} State: {{formData.medical.primaryCare.state}}</div>
-      <div class="field">Zip Code: {{formData.medical.primaryCare.zipCode}} Phone: {{formData.medical.primaryCare.phone}}</div>
-      <div class="field">Approximate date (month/year): {{formData.medical.primaryCare.date}}</div>
+      <div class="section-title">Primary Care</div>
+      <div class="field"><strong>Name:</strong> {{medical.primaryCare.name}}</div>
+      <div class="field"><strong>Testing:</strong> {{medical.primaryCare.testing}}</div>
+      <div class="field"><strong>Address:</strong> {{medical.primaryCare.address}}</div>
+      <div class="field"><strong>City:</strong> {{medical.primaryCare.city}} <strong>State:</strong> {{medical.primaryCare.state}}</div>
+      <div class="field"><strong>Zip:</strong> {{medical.primaryCare.zipCode}} <strong>Phone:</strong> {{medical.primaryCare.phone}}</div>
+      <div class="field"><strong>Date:</strong> {{medical.primaryCare.date}}</div>
     </div>
-
-    <div class="section">
-      <div class="section-title">Specialist Doctor</div>
-      <div class="field">Name: {{formData.medical.specialist.name}}</div>
-      <div class="field">Area of Specialty: {{formData.medical.specialist.specialty}}</div>
-      <div class="field">Special testing/imaging ordered: {{formData.medical.specialist.testing}}</div>
-      <div class="field">Address: {{formData.medical.specialist.address}}</div>
-      <div class="field">City: {{formData.medical.specialist.city}} State: {{formData.medical.specialist.state}}</div>
-      <div class="field">Zip Code: {{formData.medical.specialist.zipCode}} Phone: {{formData.medical.specialist.phone}}</div>
-      <div class="field">Approximate date (month/year): {{formData.medical.specialist.date}}</div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">Additional doctors:</div>
-      {{#each formData.medical.additionalDoctors}}
-      <div class="field">Name: {{this.name}}</div>
-      <div class="field">City: {{this.city}} State: {{this.state}}</div>
-      <div class="field">Phone: {{this.phone}}</div>
-      <div class="field">Address: {{this.address}}</div>
-      <div class="field">Zip Code: {{this.zipCode}}</div>
-      <div class="field">Approximate date (month/year): {{this.date}}</div>
-      <br>
-      {{/each}}
-    </div>
-  </div>
-
-  <!-- Page 3 -->
-  <div class="page-break"></div>
-  
-  <div class="section">
-    <div class="section-title">Any hospitalizations, surgeries, ER visits, important medical testing/imaging:</div>
-    <div class="field">Provide name/address/phone and reason for treatment and approximately when treatment occurred:</div>
-    <br>
     
-    {{#each formData.medical.hospitalizations}}
-    <div class="field">Name: {{this.name}}</div>
-    <div class="field">Address: {{this.address}}</div>
-    <div class="field">Phone: {{this.phone}}</div>
-    <div class="field">Reason: {{this.reason}}</div>
-    <div class="field">Approximate date (month/year): {{this.date}}</div>
-    <br>
-    {{/each}}
+    <div class="section">
+      <div class="section-title">Specialist</div>
+      <div class="field"><strong>Name:</strong> {{medical.specialist.name}}</div>
+      <div class="field"><strong>Specialty:</strong> {{medical.specialist.specialty}}</div>
+      <div class="field"><strong>Testing:</strong> {{medical.specialist.testing}}</div>
+      <div class="field"><strong>Address:</strong> {{medical.specialist.address}}</div>
+      <div class="field"><strong>City:</strong> {{medical.specialist.city}} <strong>State:</strong> {{medical.specialist.state}}</div>
+      <div class="field"><strong>Zip:</strong> {{medical.specialist.zipCode}} <strong>Phone:</strong> {{medical.specialist.phone}}</div>
+      <div class="field"><strong>Date:</strong> {{medical.specialist.date}}</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Hospitalizations, Surgeries, ER Visits, or Important Medical Testing</div>
+      <div class="field"><strong>Name:</strong> {{medical.hospitalization.name}}</div>
+      <div class="field"><strong>Reason for Treatment:</strong> {{medical.hospitalization.reason}}</div>
+      <div class="field"><strong>Testing/Imaging:</strong> {{medical.hospitalization.testing}}</div>
+      <div class="field"><strong>Address:</strong> {{medical.hospitalization.address}}</div>
+      <div class="field"><strong>City:</strong> {{medical.hospitalization.city}} <strong>State:</strong> {{medical.hospitalization.state}}</div>
+      <div class="field"><strong>Zip:</strong> {{medical.hospitalization.zipCode}} <strong>Phone:</strong> {{medical.hospitalization.phone}}</div>
+      <div class="field"><strong>Date:</strong> {{medical.hospitalization.date}}</div>
+    </div>
   </div>
 </body>
 </html>
