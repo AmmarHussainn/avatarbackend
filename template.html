@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <style>
@@ -85,6 +85,236 @@
       <div class="field"><strong>Zip:</strong> {{medical.hospitalization.zipCode}} <strong>Phone:</strong> {{medical.hospitalization.phone}}</div>
       <div class="field"><strong>Date:</strong> {{medical.hospitalization.date}}</div>
     </div>
+  </div>
+</body>
+</html> -->
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>SS App Prep</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 0;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .form-title {
+      text-align: center;
+      font-size: 26px;
+      font-weight: bold;
+      background-color: #244060;
+      color: white;
+      padding: 20px 0;
+      margin-bottom: 30px;
+    }
+
+    .container {
+      padding: 20px 40px;
+    }
+
+    .section {
+      background-color: #f6f8fa;
+      padding: 20px;
+      margin-bottom: 30px;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      page-break-inside: avoid;
+    }
+
+    .section-title {
+      font-size: 15px;
+      background-color: #244060;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field strong {
+      display: inline-block;
+      min-width: 180px;
+      color: #333;
+    }
+
+    .field-row {
+      display: flex;
+      gap: 20px;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .field-inline {
+      flex: 1;
+      padding: 6px 8px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .checkbox {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 1px solid #333;
+      text-align: center;
+      line-height: 20px;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+   .entry-box {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 15px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+
+    .footer-note {
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      margin-top: 40px;
+    }
+    .full-underline {
+  border-bottom: 1px solid #000;
+  display: inline-block;
+  width: 100%;
+  padding: 4px 0;
+}
+
+
+    @media print {
+      .section {
+        page-break-inside: avoid;
+      }
+      .form-title {
+        background-color: #244060 !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="form-title">SS App Prep</div>
+
+  <div class="container">
+    <div class="section">
+      <div class="field-row">
+        <div class="field-inline"><strong>Name:</strong> {{name}}</div>
+        <div class="field-inline"><strong>Last 4 SSN:</strong> {{ssn}}</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">1. Marriage Information</div>
+      <div class="field">
+        <strong>Were you married over 10 years or did your spouse pass away during your marriage?</strong><br/>
+        <span class="checkbox">{{#if marriedOverTenOrDeceased}}✓{{/if}}</span> Yes
+        <span class="checkbox">{{#unless marriedOverTenOrDeceased}}✓{{/unless}}</span> No
+      </div>
+      {{#if marriedOverTenOrDeceased}}
+      <div class="field-row">
+        <div class="field-inline"><strong>Name of spouse/prior spouse:</strong> {{spouseName}}</div>
+        <div class="field-inline"><strong>Spouse date of birth:</strong> {{spouseDOB}}</div>
+      </div>
+      <div class="field-inline"><strong>Spouse SSN:</strong> {{spouseSSN}}</div>
+      {{/if}}
+    </div>
+
+    <div class="section">
+      <div class="section-title">2. Employment Information</div>
+      <div class="field">(5 most recent employers in the last 5 years)</div>
+      {{#each jobs}}
+      <div class="entry-box">
+        <div class="field"><strong>Job {{inc @index}}:</strong></div>
+       <div class="field"><strong>Kind of business of employer:</strong> <span class="full-underline">{{business}}</span></div>
+        <div class="field"><strong>Job Title:</strong> <span class="full-underline">{{title}} </span> </div>
+        <div class="field-row">
+          <div class="field-inline"><strong>Start Date:</strong> {{startDate}}</div>
+          <div class="field-inline"><strong>End Date:</strong> {{endDate}}</div>
+        </div>
+        <div class="field"><strong>Pay:</strong> <span class="full-underline">${{payAmount}} {{payFrequency}}</span></div>
+
+      </div>
+      {{/each}}
+    </div>
+
+    <div class="section">
+      <div class="section-title">3. Medical Information</div>
+      <div class="field"><strong>Please provide information for treatment in the last two years:</strong></div>
+
+      <div class="section-title" style="margin-top: 20px; background-color: #e4eaf1; color: #000;">Primary Care/Family Doctor</div>
+      <div class="field"><strong>Name:</strong> <span class="full-underline"  > {{medical.primaryCare.name}}</span> </div>
+      <div class="field"><strong>Special testing/imaging ordered:</strong> <span class="full-underline">{{medical.primaryCare.testing}}</span> </div>
+      <div class="field"><strong>Address:</strong> <span class="full-underline"> {{medical.primaryCare.address}}</span> </div>
+      <div class="field-row">
+        <div class="field-inline"><strong>City:</strong> {{medical.primaryCare.city}}</div>
+        <div class="field-inline"><strong>State:</strong> {{medical.primaryCare.state}}</div>
+      </div>
+      <div class="field-row">
+        <div class="field-inline"><strong>Zip Code:</strong> {{medical.primaryCare.zipCode}}</div>
+        <div class="field-inline"><strong>Phone:</strong> {{medical.primaryCare.phone}}</div>
+      </div>
+
+      <div class="section-title" style="margin-top: 20px; background-color: #e4eaf1; color: #000;">Specialist Doctor</div>
+      <span class="field"><strong>Name:</strong> <span class="full-underline"  >  {{medical.specialist.name}} </span></div>
+      <div class="field"><strong>Area of Specialty:</strong> <span class="full-underline"  > {{medical.specialist.specialty}} </span></div>
+      <div class="field"><strong>Special testing/imaging ordered:</strong><span class="full-underline"  >{{medical.specialist.testing}} </span> </div>
+      <div class="field"><strong>Address:</strong> <span class="full-underline"  >  {{medical.specialist.address}}</span></div>
+      <div class="field-row">
+        <div class="field-inline"><strong>City:</strong> {{medical.specialist.city}}</div>
+        <div class="field-inline"><strong>State:</strong> {{medical.specialist.state}}</div>
+      </div>
+      <div class="field-row">
+        <div class="field-inline"><strong>Zip Code:</strong> {{medical.specialist.zipCode}}</div>
+        <div class="field-inline"><strong>Phone:</strong> {{medical.specialist.phone}}</div>
+      </div>
+
+      {{#if medical.additionalDoctors.length}}
+      <div class="section-title" style="margin-top: 20px; background-color: #e4eaf1; color: #000;">Additional Doctors</div>
+      {{#each medical.additionalDoctors}}
+      <div class="entry-box">
+        <div class="field"><strong>Name:</strong>  <span class="full-underline"  >  {{name}} </span></div>
+        <div class="field"><strong>Address:</strong>  <span class="full-underline"  >  {{address}} </span> </div>
+        <div class="field-row">
+          <div class="field-inline"><strong>City:</strong> {{city}}</div>
+          <div class="field-inline"><strong>State:</strong> {{state}}</div>
+        </div>
+        <div class="field-row">
+          <div class="field-inline"><strong>Zip Code:</strong> {{zipCode}}</div>
+          <div class="field-inline"><strong>Phone:</strong> {{phone}}</div>
+        </div>
+        <div class="field"><strong>Date:</strong>  <span class="full-underline"  >  {{date}} </span> </div>
+      </div>
+      {{/each}}
+      {{/if}}
+    </div>
+
+   
   </div>
 </body>
 </html>

@@ -1213,6 +1213,11 @@ async function generatePDF(formData) {
       }
     };
 
+
+      handlebars.registerHelper('inc', function (value) {
+      return parseInt(value) + 1;
+    });
+
     // 4. Compile template with safe access
     const template = handlebars.compile(htmlTemplate, {
       noEscape: true,
