@@ -656,9 +656,24 @@ async function generatePDF(formData) {
     console.log('Template data:', JSON.stringify(templateData, null, 2));
 
     // 6. Generate PDF
+    // const browser = await puppeteer.launch({
+    //   headless: true,
+    //   args: ['--no-sandbox', '--disable-setuid-sandbox']
+    // });
+
     const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      headless: 'new',
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process',
+        '--disable-gpu'
+      ],
+      executablePath: process.env.CHROMIUM_PATH || undefined
     });
     const page = await browser.newPage();
     
