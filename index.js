@@ -604,6 +604,117 @@ const validateFormData = [
   body('chatHistory.*.mode').isIn(['text_mode', 'voice_mode']),
   body('chatHistory.*.timestamp').isISO8601(),
 ];
+
+
+
+// async function generatePDF(formData) {
+//   try {
+//     // 1. Convert Mongoose document to plain JavaScript object
+//     const data = formData.toObject ? formData.toObject() : formData;
+    
+//     // 2. Load template
+//     const templatePath = path.join(__dirname, 'template.html');
+//     const htmlTemplate = await fs.readFile(templatePath, 'utf8');
+
+//     // 3. Prepare template data with proper structure
+//     const templateData = {
+//       name: data.name,
+//       ssn: data.ssn,
+//       marriedOverTenOrDeceased: data.marriedOverTenOrDeceased,
+//       spouseName: data.spouseName,
+//       spouseDOB: data.spouseDOB,
+//       spouseSSN: data.spouseSSN,
+//       jobs: (data.jobs || []).map(job => ({
+//         business: job.business,
+//         title: job.title,
+//         startDate: job.startDate,
+//         endDate: job.endDate === 'present' ? 'Present' : job.endDate,
+//         payAmount: job.payAmount,
+//         payFrequency: job.payFrequency
+//       })),
+//       medical: {
+//         primaryCare: data.medical?.primaryCare || {},
+//         specialist: data.medical?.specialist || {},
+//         additionalDoctors: data.medical?.additionalDoctors || [],
+//         hospitalizations: data.medical?.hospitalizations || []
+//       }
+//     };
+
+
+//       handlebars.registerHelper('inc', function (value) {
+//       return parseInt(value) + 1;
+//     });
+
+//     // 4. Compile template with safe access
+//     const template = handlebars.compile(htmlTemplate, {
+//       noEscape: true,
+//       allowProtoPropertiesByDefault: true,
+//       allowProtoMethodsByDefault: true
+//     });
+    
+//     const html = template(templateData);
+
+//     // 5. Debug: Save HTML for inspection
+//     await fs.writeFile('debug_output.html', html);
+//     console.log('Template data:', JSON.stringify(templateData, null, 2));
+
+//     // 6. Generate PDF
+//     // const browser = await puppeteer.launch({
+//     //   headless: true,
+//     //   args: ['--no-sandbox', '--disable-setuid-sandbox']
+//     // });
+
+//     const browser = await puppeteer.launch({
+//       headless: 'new',
+//       args: [
+//         '--no-sandbox',
+//         '--disable-setuid-sandbox',
+//         '--disable-dev-shm-usage',
+//         '--disable-accelerated-2d-canvas',
+//         '--no-first-run',
+//         '--no-zygote',
+//         '--single-process',
+//         '--disable-gpu'
+//       ],
+//       executablePath: process.env.CHROMIUM_PATH || undefined
+//     });
+    
+//     const page = await browser.newPage();
+    
+//     await page.setContent(html, {
+//       waitUntil: 'networkidle0',
+//       timeout: 30000
+//     });
+
+//     const pdfFileName = `SS_App_${Date.now()}.pdf`;
+//     await page.pdf({
+//       path: pdfFileName,
+//       format: 'A4',
+     
+//       printBackground: true
+//     });
+
+//     await browser.close();
+//     return pdfFileName;
+//   } catch (error) {
+//     console.error('PDF generation failed:', error);
+//     throw error;
+//   }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+// Email transporter setup
+
 async function generatePDF(formData) {
   try {
     // 1. Convert Mongoose document to plain JavaScript object
@@ -637,12 +748,12 @@ async function generatePDF(formData) {
       }
     };
 
-
-      handlebars.registerHelper('inc', function (value) {
+    // Register Handlebars helper
+    handlebars.registerHelper('inc', function(value) {
       return parseInt(value) + 1;
     });
 
-    // 4. Compile template with safe access
+    // 4. Compile template
     const template = handlebars.compile(htmlTemplate, {
       noEscape: true,
       allowProtoPropertiesByDefault: true,
@@ -655,61 +766,65 @@ async function generatePDF(formData) {
     await fs.writeFile('debug_output.html', html);
     console.log('Template data:', JSON.stringify(templateData, null, 2));
 
-    // 6. Generate PDF
+    // 6. Generate PDF using Puppeteer as shown in the example
     // const browser = await puppeteer.launch({
-    //   headless: true,
-    //   args: ['--no-sandbox', '--disable-setuid-sandbox']
+    //   headless: 'new',
+    //   args: [
+    //     '--no-sandbox',
+    //     '--disable-setuid-sandbox',
+    //     '--disable-dev-shm-usage',
+    //     '--disable-accelerated-2d-canvas',
+    //     '--no-first-run',
+    //     '--no-zygote',
+    //     '--single-process',
+    //     '--disable-gpu'
+    //   ],
+    //   executablePath: process.env.CHROMIUM_PATH || undefined
     // });
-
     const browser = await puppeteer.launch({
-      headless: 'new',
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--no-first-run',
-        '--no-zygote',
-        '--single-process',
-        '--disable-gpu'
-      ],
-      executablePath: process.env.CHROMIUM_PATH || undefined
-    });
-    const page = await browser.newPage();
-    
-    await page.setContent(html, {
-      waitUntil: 'networkidle0',
-      timeout: 30000
-    });
+  headless: 'new',
+  args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
+    '--disable-gpu',
+    '--single-process'
+  ],
+  executablePath: '/usr/bin/chromium-browser'
+});
+    try {
+      const page = await browser.newPage();
+      
+      // Set the HTML content
+      await page.setContent(html, {
+        waitUntil: 'networkidle0',
+        timeout: 30000
+      });
 
-    const pdfFileName = `SS_App_${Date.now()}.pdf`;
-    await page.pdf({
-      path: pdfFileName,
-      format: 'A4',
-     
-      printBackground: true
-    });
+      // Set viewport size (optional but recommended)
+      await page.setViewport({ width: 1080, height: 1024 });
 
-    await browser.close();
-    return pdfFileName;
+      // Generate PDF file name
+      const pdfFileName = `SS_App_${Date.now()}.pdf`;
+
+      // Generate PDF with options
+      await page.pdf({
+        path: pdfFileName,
+        format: 'A4',
+        printBackground: true,
+       
+      });
+
+      return pdfFileName;
+    } finally {
+      await browser.close();
+    }
   } catch (error) {
     console.error('PDF generation failed:', error);
     throw error;
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-// Email transporter setup
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {

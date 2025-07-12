@@ -15,17 +15,23 @@
   <div class="form-title">SS App Prep</div>
   
   <div class="section" style="display:  flex ; width: 100% ;   ">
-    <div class="field" style="width: 70%; border-bottom: 1px solid #000; padding-bottom: 4px; "><strong >Name:</strong> asdsa</div> <br/>
-    <div class="field" style="width: 30%; border-bottom: 1px solid #000; padding-bottom: 4px; "><strong >Last 4 SSN:</strong> 1232</div>
+    <div class="field" style="width: 70%; border-bottom: 1px solid #000; padding-bottom: 4px; "><strong >Name:</strong> John Doe</div> <br/>
+    <div class="field" style="width: 30%; border-bottom: 1px solid #000; padding-bottom: 4px; "><strong >Last 4 SSN:</strong> 1234</div>
   </div>
 
   <div class="section">
     <div class="section-title" style="text-decoration: underline;">Marriage Information</div>
     <div class="field">
       <strong>Were you married over 10 years or did your spouse pass away during your marriage?</strong>
-      <span class="checkbox">□ Yes</span>
-      <span class="checkbox">✓ No</span>
+      <span class="checkbox">✓ Yes</span>
+      <span class="checkbox">□ No</span>
     </div>
+    <div style="display:  flex ; width: 100% ;   ">
+
+      <div class="field" style="width: 70%; border-bottom: 1px solid #000; padding-bottom: 4px; "><strong>Spouse Name:</strong> Jane Doe</div> <br/>
+      <div class="field" style="width: 30%; border-bottom: 1px solid #000; padding-bottom: 4px; "><strong>Spouse DOB:</strong> 1980-01-15</div>
+    </div>
+    <div class="field"><strong>Spouse SSN:</strong> 5678</div>
   </div>
 
   <div class="section">
@@ -33,11 +39,19 @@
     <div class="field">(5 most recent employers in the last 5 years)</div>
     <div class="job">
       <div><strong>Job 0</strong></div>
-      <div class="field"><strong>Business:</strong> NA</div>
-      <div class="field"><strong>Title:</strong> NA</div>
-      <div class="field"><strong>Start Date:</strong> NA</div>
-      <div class="field"><strong>End Date:</strong> NA</div>
-      <div class="field"><strong>Pay:</strong> $NA NA</div>
+      <div class="field"><strong>Business:</strong> Tech Corp</div>
+      <div class="field"><strong>Title:</strong> Software Engineer</div>
+      <div class="field"><strong>Start Date:</strong> 2015-06</div>
+      <div class="field"><strong>End Date:</strong> Present</div>
+      <div class="field"><strong>Pay:</strong> $85000 annually</div>
+    </div>
+    <div class="job">
+      <div><strong>Job 1</strong></div>
+      <div class="field"><strong>Business:</strong> Web Solutions</div>
+      <div class="field"><strong>Title:</strong> Web Developer</div>
+      <div class="field"><strong>Start Date:</strong> 2012-01</div>
+      <div class="field"><strong>End Date:</strong> 2015-05</div>
+      <div class="field"><strong>Pay:</strong> $25.5 hourly</div>
     </div>
   </div>
 
@@ -46,23 +60,23 @@
     
     <div class="section">
       <div class="section-title">Primary Care</div>
-      <div class="field"><strong>Name:</strong> NA</div>
-      <div class="field"><strong>Testing:</strong> NA</div>
-      <div class="field"><strong>Address:</strong> NA</div>
-      <div class="field"><strong>City:</strong> NA <strong>State:</strong> NA</div>
-      <div class="field"><strong>Zip:</strong> NA <strong>Phone:</strong> NA</div>
-      <div class="field"><strong>Date:</strong> NA</div>
+      <div class="field"><strong>Name:</strong> Dr. Smith</div>
+      <div class="field"><strong>Testing:</strong> General Checkup</div>
+      <div class="field"><strong>Address:</strong> 123 Health St</div>
+      <div class="field"><strong>City:</strong> New York <strong>State:</strong> NY</div>
+      <div class="field"><strong>Zip:</strong> 12345 <strong>Phone:</strong> 555-123-4567</div>
+      <div class="field"><strong>Date:</strong> 2023-01</div>
     </div>
     
     <div class="section">
       <div class="section-title">Specialist</div>
-      <div class="field"><strong>Name:</strong> NA</div>
-      <div class="field"><strong>Specialty:</strong> NA</div>
-      <div class="field"><strong>Testing:</strong> NA</div>
-      <div class="field"><strong>Address:</strong> NA</div>
-      <div class="field"><strong>City:</strong> NA <strong>State:</strong> NA</div>
-      <div class="field"><strong>Zip:</strong> NA <strong>Phone:</strong> NA</div>
-      <div class="field"><strong>Date:</strong> NA</div>
+      <div class="field"><strong>Name:</strong> Dr. Johnson</div>
+      <div class="field"><strong>Specialty:</strong> Cardiology</div>
+      <div class="field"><strong>Testing:</strong> EKG</div>
+      <div class="field"><strong>Address:</strong> 456 Heart Ave</div>
+      <div class="field"><strong>City:</strong> New York <strong>State:</strong> NY</div>
+      <div class="field"><strong>Zip:</strong> 67890 <strong>Phone:</strong> 555-987-6543</div>
+      <div class="field"><strong>Date:</strong> 2023-02</div>
     </div>
 
     <div class="section">
@@ -214,8 +228,8 @@
   <div class="container">
     <div class="section">
       <div class="field-row">
-        <div class="field-inline"><strong>Name:</strong> asdsa</div>
-        <div class="field-inline"><strong>Last 4 SSN:</strong> 1232</div>
+        <div class="field-inline"><strong>Name:</strong> John Doe</div>
+        <div class="field-inline"><strong>Last 4 SSN:</strong> 1234</div>
       </div>
     </div>
 
@@ -223,9 +237,14 @@
       <div class="section-title">1. Marriage Information</div>
       <div class="field">
         <strong>Were you married over 10 years or did your spouse pass away during your marriage?</strong><br/>
-        <span class="checkbox"></span> Yes
-        <span class="checkbox">✓</span> No
+        <span class="checkbox">✓</span> Yes
+        <span class="checkbox"></span> No
       </div>
+      <div class="field-row">
+        <div class="field-inline"><strong>Name of spouse/prior spouse:</strong> Jane Doe</div>
+        <div class="field-inline"><strong>Spouse date of birth:</strong> 1980-01-15</div>
+      </div>
+      <div class="field-inline"><strong>Spouse SSN:</strong> 5678</div>
     </div>
 
     <div class="section">
@@ -233,13 +252,24 @@
       <div class="field">(5 most recent employers in the last 5 years)</div>
       <div class="entry-box">
         <div class="field"><strong>Job 1:</strong></div>
-       <div class="field"><strong>Kind of business of employer:</strong> <span class="full-underline">NA</span></div>
-        <div class="field"><strong>Job Title:</strong> <span class="full-underline">NA </span> </div>
+       <div class="field"><strong>Kind of business of employer:</strong> <span class="full-underline">Tech Corp</span></div>
+        <div class="field"><strong>Job Title:</strong> <span class="full-underline">Software Engineer </span> </div>
         <div class="field-row">
-          <div class="field-inline"><strong>Start Date:</strong> NA</div>
-          <div class="field-inline"><strong>End Date:</strong> NA</div>
+          <div class="field-inline"><strong>Start Date:</strong> 2015-06</div>
+          <div class="field-inline"><strong>End Date:</strong> Present</div>
         </div>
-        <div class="field"><strong>Pay:</strong> <span class="full-underline">$NA NA</span></div>
+        <div class="field"><strong>Pay:</strong> <span class="full-underline">$85000 annually</span></div>
+
+      </div>
+      <div class="entry-box">
+        <div class="field"><strong>Job 2:</strong></div>
+       <div class="field"><strong>Kind of business of employer:</strong> <span class="full-underline">Web Solutions</span></div>
+        <div class="field"><strong>Job Title:</strong> <span class="full-underline">Web Developer </span> </div>
+        <div class="field-row">
+          <div class="field-inline"><strong>Start Date:</strong> 2012-01</div>
+          <div class="field-inline"><strong>End Date:</strong> 2015-05</div>
+        </div>
+        <div class="field"><strong>Pay:</strong> <span class="full-underline">$25.5 hourly</span></div>
 
       </div>
     </div>
@@ -249,32 +279,46 @@
       <div class="field"><strong>Please provide information for treatment in the last two years:</strong></div>
 
       <div class="section-title" style="margin-top: 20px; background-color: #e4eaf1; color: #000;">Primary Care/Family Doctor</div>
-      <div class="field"><strong>Name:</strong> <span class="full-underline"  > NA</span> </div>
-      <div class="field"><strong>Special testing/imaging ordered:</strong> <span class="full-underline">NA</span> </div>
-      <div class="field"><strong>Address:</strong> <span class="full-underline"> NA</span> </div>
+      <div class="field"><strong>Name:</strong> <span class="full-underline"  > Dr. Smith</span> </div>
+      <div class="field"><strong>Special testing/imaging ordered:</strong> <span class="full-underline">General Checkup</span> </div>
+      <div class="field"><strong>Address:</strong> <span class="full-underline"> 123 Health St</span> </div>
       <div class="field-row">
-        <div class="field-inline"><strong>City:</strong> NA</div>
-        <div class="field-inline"><strong>State:</strong> NA</div>
+        <div class="field-inline"><strong>City:</strong> New York</div>
+        <div class="field-inline"><strong>State:</strong> NY</div>
       </div>
       <div class="field-row">
-        <div class="field-inline"><strong>Zip Code:</strong> NA</div>
-        <div class="field-inline"><strong>Phone:</strong> NA</div>
+        <div class="field-inline"><strong>Zip Code:</strong> 12345</div>
+        <div class="field-inline"><strong>Phone:</strong> 555-123-4567</div>
       </div>
 
       <div class="section-title" style="margin-top: 20px; background-color: #e4eaf1; color: #000;">Specialist Doctor</div>
-      <span class="field"><strong>Name:</strong> <span class="full-underline"  >  NA </span></div>
-      <div class="field"><strong>Area of Specialty:</strong> <span class="full-underline"  > NA </span></div>
-      <div class="field"><strong>Special testing/imaging ordered:</strong><span class="full-underline"  >NA </span> </div>
-      <div class="field"><strong>Address:</strong> <span class="full-underline"  >  NA</span></div>
+      <span class="field"><strong>Name:</strong> <span class="full-underline"  >  Dr. Johnson </span></div>
+      <div class="field"><strong>Area of Specialty:</strong> <span class="full-underline"  > Cardiology </span></div>
+      <div class="field"><strong>Special testing/imaging ordered:</strong><span class="full-underline"  >EKG </span> </div>
+      <div class="field"><strong>Address:</strong> <span class="full-underline"  >  456 Heart Ave</span></div>
       <div class="field-row">
-        <div class="field-inline"><strong>City:</strong> NA</div>
-        <div class="field-inline"><strong>State:</strong> NA</div>
+        <div class="field-inline"><strong>City:</strong> New York</div>
+        <div class="field-inline"><strong>State:</strong> NY</div>
       </div>
       <div class="field-row">
-        <div class="field-inline"><strong>Zip Code:</strong> NA</div>
-        <div class="field-inline"><strong>Phone:</strong> NA</div>
+        <div class="field-inline"><strong>Zip Code:</strong> 67890</div>
+        <div class="field-inline"><strong>Phone:</strong> 555-987-6543</div>
       </div>
 
+      <div class="section-title" style="margin-top: 20px; background-color: #e4eaf1; color: #000;">Additional Doctors</div>
+      <div class="entry-box">
+        <div class="field"><strong>Name:</strong>  <span class="full-underline"  >  Dr. Williams </span></div>
+        <div class="field"><strong>Address:</strong>  <span class="full-underline"  >  789 Specialist Rd </span> </div>
+        <div class="field-row">
+          <div class="field-inline"><strong>City:</strong> Boston</div>
+          <div class="field-inline"><strong>State:</strong> MA</div>
+        </div>
+        <div class="field-row">
+          <div class="field-inline"><strong>Zip Code:</strong> 54321</div>
+          <div class="field-inline"><strong>Phone:</strong> 555-456-7890</div>
+        </div>
+        <div class="field"><strong>Date:</strong>  <span class="full-underline"  >  2022-11 </span> </div>
+      </div>
     </div>
 
    
